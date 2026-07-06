@@ -1,0 +1,21 @@
+# Don't ship dev artifacts or local state into the image build context
+.git/
+.github/
+bin/
+dist/
+node_modules/
+web/node_modules/
+web/dist/
+internal/api/dist/
+.assay/
+docs/
+testdata/
+*.log
+*.test
+*.out
+coverage.txt
+.idea/
+.vscode/
+.DS_Store
+# Plan/spec markdown isn't needed in the runtime image
+docs/superpowers/

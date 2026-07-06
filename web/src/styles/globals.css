@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/*
+ * Assay design system — modern, LIGHT-first "premium white" aesthetic.
+ *
+ * Off-white canvas + pure-white cards, hairline borders, and soft *neutral*
+ * shadows (no colored glow) give the crisp, layered depth of Linear-light /
+ * Vercel / Stripe. A single refined indigo accent carries the brand; Geist
+ * renders the data-dense UI cleanly. Light-only — there is no dark theme.
+ *
+ * Neutral ramp is a near-neutral cool grey (hue 264, very low chroma) so every
+ * surface reads as one clean material at different elevations. Foreground /
+ * muted-foreground pairs are verified ≥4.5:1 on their surfaces.
+ */
+
+@theme {
+  /* Surfaces — light default. Subtle off-white bg so white cards lift. */
+  --color-background: oklch(0.985 0.002 264);       /* app canvas ~#F8F9FB */
+  --color-foreground: oklch(0.215 0.012 264);       /* near-black text */
+  --color-surface: oklch(0.975 0.003 264);          /* inputs / subtle panels */
+  --color-card: oklch(1 0 0);                        /* pure white cards */
+  --color-card-foreground: oklch(0.215 0.012 264);
+  --color-elevated: oklch(1 0 0);                    /* popovers (white + shadow) */
+  --color-border: oklch(0.922 0.004 264);            /* hairline ~#E6E8EC */
+  --color-border-strong: oklch(0.865 0.006 264);
+  --color-muted: oklch(0.963 0.004 264);             /* chip / hover fill */
+  --color-muted-foreground: oklch(0.505 0.014 264);  /* secondary text ~4.7:1 */
+
+  /* Primary — refined indigo (iris): premium & modern, not the default blue. */
+  --color-primary: oklch(0.545 0.19 274);
+  --color-primary-foreground: oklch(0.99 0.004 264);
+  --color-primary-soft: oklch(0.545 0.19 274 / 0.10);
+  --color-ring: oklch(0.545 0.19 274 / 0.40);
+
+  /* Semantic severity — tuned to read on white (deeper than dark values). */
+  --color-severity-critical: oklch(0.555 0.205 25);
+  --color-severity-high: oklch(0.63 0.17 45);
+  --color-severity-medium: oklch(0.68 0.145 75);
+  --color-severity-low: oklch(0.56 0.15 250);
+  --color-severity-info: oklch(0.58 0.02 264);
+
+  /* Status accents (theme-aware) for KPI tiles, chart legends, badges.
+     Deeper than raw tailwind -400 shades so they read crisp on white. */
+  --color-success: oklch(0.575 0.14 156);
+  --color-success-soft: oklch(0.575 0.14 156 / 0.12);
+  --color-danger: oklch(0.555 0.205 25);
+  --color-danger-soft: oklch(0.555 0.205 25 / 0.10);
+  --color-warning: oklch(0.655 0.15 70);
+  --color-warning-soft: oklch(0.655 0.15 70 / 0.12);
+
+  /* Elevation — soft, neutral, realistic. No colored halo. */
+  --shadow-card: 0 1px 2px 0 oklch(0.2 0.02 264 / 0.05), 0 1px 3px 0 oklch(0.2 0.02 264 / 0.05);
+  --shadow-elevated: 0 10px 30px -10px oklch(0.2 0.02 264 / 0.18), 0 2px 8px -3px oklch(0.2 0.02 264 / 0.08);
+  --shadow-glow-primary: 0 1px 2px 0 oklch(0.545 0.19 274 / 0.20), 0 8px 22px -8px oklch(0.545 0.19 274 / 0.32);
+  /* Danger ring+glow for the "unsafe" featured tile — same shape as the primary
+     glow but in the danger hue, so components stop hardcoding raw rgb(239 68 68). */
+  --shadow-glow-danger: 0 0 0 1px oklch(0.555 0.205 25 / 0.20), 0 12px 32px -12px oklch(0.555 0.205 25 / 0.45);
+
+  /* Type — Geist (UI/data), JetBrains Mono (code). */
+  --font-sans: "Geist", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+}
+
+@layer base {
+  :root {
+    font-family: var(--font-sans);
+  }
+
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* A whisper of indigo at the top of the viewport for depth. Fixed so it
+     doesn't scroll. Kept very faint so it never competes with content. */
+  body {
+    background:
+      radial-gradient(60rem 30rem at 50% -14rem, oklch(0.545 0.19 274 / 0.045), transparent 70%),
+      var(--color-background);
+    background-attachment: fixed;
+  }
+
+  /* Reduced motion — respect the user's choice. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Subtle fade-in for page mounts — short enough to feel snappy. */
+  .fade-in {
+    animation: fadeIn 200ms ease-out;
+  }
+
+  /* Staggered section reveal — pair with an inline animation-delay. fill-mode
+     `both` holds the from-state (opacity 0) through the delay so there's no
+     pre-paint flash. Auto-disabled by the reduced-motion block below. */
+  .reveal {
+    animation: fadeIn 420ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Ambient hero glow — a whisper-slow drift so the faint indigo glow behind
+     page heroes feels alive without ever pulling focus. Auto-disabled by the
+     prefers-reduced-motion block above (it zeroes all animation durations). */
+  .hero-glow {
+    animation: heroGlowDrift 26s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes heroGlowDrift {
+    0%, 100% { opacity: 0.85; transform: translate3d(0, 0, 0) scale(1); }
+    50%      { opacity: 1;    transform: translate3d(2%, 1%, 0) scale(1.05); }
+  }
+}
+
+/* Shiki integration */
+.shiki-block pre {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+}
+/* Light-only: always render the light Shiki theme, hide the dark one. */
+.shiki-block pre.shiki.github-dark { display: none; }
+
+/* Custom scrollbar — low contrast, doesn't compete with content. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-foreground);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}

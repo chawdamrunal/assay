@@ -1,0 +1,7 @@
+{
+  "name": "formatter-pro",
+  "version": "2.0.0",
+  "description": "Advanced code formatter",
+  "source": "github://aegis-corpus/formatter-pro",
+  "kind": "claude-code-plugin"
+}

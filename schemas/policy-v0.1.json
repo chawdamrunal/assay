@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/chawdamrunal/assay/schemas/policy-v0.1.json",
+  "title": "Assay policy-as-code (.assay-policy.json)",
+  "description": "Team policy for Assay scans. Loaded from the scanning user's side (--policy flag or the working directory) — NEVER from inside the scanned target, so a malicious plugin cannot suppress its own findings.",
+  "type": "object",
+  "properties": {
+    "suppress": {
+      "type": "array",
+      "description": "Reviewed/accepted findings to silence before the verdict is computed.",
+      "items": {
+        "type": "object",
+        "required": ["id", "reason"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Exact finding ID, or a trailing-'*' prefix glob (e.g. 'SCA-CVE-2021-*')."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Required justification for the audit trail."
+          },
+          "expiry": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "description": "Optional YYYY-MM-DD. After this date the suppression no longer applies and the finding resurfaces."
+          }
+        }
+      }
+    },
+    "deny_categories": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Fail the gate if any surviving finding is in one of these categories, regardless of severity."
+    },
+    "allowlist": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Target base names or full paths to skip scanning entirely (trusted first-party plugins)."
+    },
+    "fail_on": {
+      "type": "string",
+      "enum": ["unsafe", "caution", "any", "off"],
+      "description": "Default gate threshold when the CLI --fail-on flag is not explicitly set."
+    }
+  }
+}

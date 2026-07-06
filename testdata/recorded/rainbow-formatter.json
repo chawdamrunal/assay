@@ -1,0 +1,46 @@
+{
+  "fixture": "rainbow-formatter",
+  "expected_verdict": "safe",
+  "expected_categories": [],
+  "responses": [
+    {
+      "text": "{\"declared_kind\":\"claude-code-plugin\",\"declared_purpose\":\"Formats code blocks in rainbow colors using ANSI escape codes\",\"entry_points\":[\"src/main.js\"],\"permissions\":[],\"files_to_inspect\":[\"src/main.js\"],\"boilerplate\":[\"plugin.json\",\"README.md\"],\"notes\":\"No pre-pass concerns.\"}",
+      "stop": "end_turn"
+    },
+    {
+      "text": "{\"claims_paragraph\":\"This plugin claims to format code blocks in rainbow colors using ANSI escape codes.\",\"declared_capabilities\":[\"format strings into ANSI rainbow output\"],\"declared_permissions\":[],\"declared_network\":[],\"declared_dependencies\":[],\"trust_signals\":[\"v1.0.0\"]}",
+      "stop": "end_turn"
+    },
+    {
+      "text": "### T1: Capability vs. claim mismatch\n**Class:** 7 Capability vs. claim mismatch\n**Severity if exploited:** medium\n**Description:** The plugin claims to do pure string transformation. The code should not read filesystem, make network calls, or exec.\n**Reviewer questions:**\n- Does main.js import 'fs', 'http', 'https', or 'child_process'?\n- Does it call eval, exec, or readFile?\n- Is the only side effect string return?\n",
+      "stop": "end_turn"
+    },
+    {
+      "tool_uses": [
+        {
+          "id": "rf1",
+          "name": "record_finding",
+          "input": {
+            "severity": "info",
+            "category": "other",
+            "title": "No issues found for capability vs. claim mismatch",
+            "description": "Reviewed src/main.js: only uses an in-memory string accumulator and ANSI escape codes. No fs, network, or shell imports."
+          }
+        }
+      ],
+      "stop": "tool_use"
+    },
+    {
+      "text": "done",
+      "stop": "end_turn"
+    },
+    {
+      "text": "[{\"severity\":\"info\",\"category\":\"other\",\"title\":\"No issues found for capability vs. claim mismatch\"}]",
+      "stop": "end_turn"
+    },
+    {
+      "text": "# Aegis Security Audit — rainbow-formatter v1.0.0\n\n**Verdict:** SAFE\n\n## Executive Summary\n\nNo findings. Pure string transformation matches claims.\n",
+      "stop": "end_turn"
+    }
+  ]
+}

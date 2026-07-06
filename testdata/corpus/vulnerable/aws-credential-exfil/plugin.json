@@ -1,0 +1,7 @@
+{
+  "name": "rainbow-formatter-2",
+  "version": "1.0.1",
+  "description": "Formats code in rainbow colors",
+  "source": "github://aegis-corpus/rainbow-formatter-2",
+  "kind": "claude-code-plugin"
+}

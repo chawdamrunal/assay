@@ -1,0 +1,109 @@
+name: 'Assay AI dev-stack security scan'
+description: 'Scan a Claude Code plugin, MCP server, hook, or directory for AI-dev-stack security threats. Emits SARIF for GitHub code scanning and can fail the job on risky verdicts.'
+branding:
+  icon: 'shield'
+  color: 'purple'
+
+inputs:
+  target:
+    description: 'Path to scan (a plugin / MCP dir, or the repo root).'
+    required: false
+    default: '.'
+  fail-on:
+    description: 'Threshold that fails the job: unsafe | caution | any | off.'
+    required: false
+    default: 'unsafe'
+  mode:
+    description: >-
+      "quick" runs the deterministic pre-pass + SCA/poison floor only (no LLM,
+      no secret required — instant CI gate). "full" runs the LLM-driven 5-stage
+      audit and requires anthropic-api-key (CI has no Claude Code subscription
+      session, so the API-key legacy lane is used).
+    required: false
+    default: 'quick'
+  anthropic-api-key:
+    description: 'Anthropic API key, required only for mode=full. Pass via secrets.'
+    required: false
+    default: ''
+  version:
+    description: 'Assay release tag to install (e.g. v0.1.0), or "latest".'
+    required: false
+    default: 'latest'
+  upload-sarif:
+    description: 'Upload audit.sarif to GitHub code scanning (mode=full only).'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install assay
+      shell: bash
+      env:
+        ASSAY_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        os=linux; arch=amd64
+        case "$(uname -s)" in
+          Darwin) os=darwin ;;
+          Linux)  os=linux  ;;
+          *)      os=linux  ;;
+        esac
+        case "$(uname -m)" in
+          arm64|aarch64) arch=arm64 ;;
+        esac
+        tag="${ASSAY_VERSION}"
+        if [ "$tag" = "latest" ]; then
+          tag=$(curl -fsSL https://api.github.com/repos/chawdamrunal/assay/releases/latest | grep -m1 '"tag_name"' | cut -d'"' -f4)
+        fi
+        # goreleaser archive name is assay_<version>_<os>_<arch>.tar.gz (version without the leading 'v')
+        ver="${tag#v}"
+        url="https://github.com/chawdamrunal/assay/releases/download/${tag}/assay_${ver}_${os}_${arch}.tar.gz"
+        echo "Installing assay ${tag} from ${url}"
+        curl -fsSL "$url" -o /tmp/assay.tar.gz
+        tar -xzf /tmp/assay.tar.gz -C /tmp assay
+        sudo mv /tmp/assay /usr/local/bin/assay
+        assay version
+
+    - name: Run assay scan
+      shell: bash
+      env:
+        ASSAY_MODE: ${{ inputs.mode }}
+        ASSAY_TARGET: ${{ inputs.target }}
+        ASSAY_FAIL_ON: ${{ inputs.fail-on }}
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
+      run: |
+        set -euo pipefail
+        outdir="${RUNNER_TEMP}/assay"
+        mkdir -p "$outdir"
+        if [ "$ASSAY_MODE" = "full" ]; then
+          if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "::error::mode=full requires anthropic-api-key (CI has no Claude Code subscription session)."
+            exit 1
+          fi
+          assay scan --format sarif --output "$outdir" --fail-on "$ASSAY_FAIL_ON" "$ASSAY_TARGET"
+        else
+          # Deterministic, no-secret gate: pre-pass + SCA/poison floor.
+          json=$(assay scan --quick --json "$ASSAY_TARGET")
+          echo "$json"
+          risk=$(printf '%s' "$json" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("risk","unknown"))')
+          echo "Assay quick risk: $risk"
+          case "${ASSAY_FAIL_ON}:${risk}" in
+            off:*|*:low|*:unknown) : ;;
+            any:*|caution:medium|caution:high|caution:critical|unsafe:high|unsafe:critical)
+              echo "::error::Assay quick gate: risk=${risk} meets --fail-on=${ASSAY_FAIL_ON}"; exit 2 ;;
+          esac
+        fi
+
+    - name: Upload SARIF
+      # Run whenever audit.sarif was actually written (mode=full produces it;
+      # quick mode does not support --format sarif so the file won't exist and
+      # hashFiles returns ""), and upload-sarif input is 'true'.
+      # Using hashFiles as the existence guard means the step is a no-op (skipped
+      # by GitHub) when quick mode ran — without blocking full-mode uploads or
+      # requiring callers to set mode explicitly.
+      if: ${{ inputs.upload-sarif == 'true' && hashFiles(format('{0}/assay/audit.sarif', runner.temp)) != '' }}
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ runner.temp }}/assay/audit.sarif
+        category: assay

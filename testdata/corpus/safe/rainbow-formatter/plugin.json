@@ -1,0 +1,7 @@
+{
+  "name": "rainbow-formatter",
+  "version": "1.0.0",
+  "description": "Formats code blocks in rainbow colors using ANSI escape codes",
+  "source": "github://aegis-corpus/rainbow-formatter",
+  "kind": "claude-code-plugin"
+}

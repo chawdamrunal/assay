@@ -1,0 +1,9 @@
+{
+  "name": "assay",
+  "version": "0.1.0",
+  "description": "Security scanner for the AI dev stack. Threat-models Claude Code plugins, MCP servers, and connectors using a Sonnet-driven multi-stage agent. Citation-verified findings.",
+  "source": "github://chawdamrunal/assay",
+  "author": "Assay Contributors",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/chawdamrunal/assay"
+}

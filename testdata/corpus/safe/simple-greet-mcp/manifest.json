@@ -1,0 +1,12 @@
+{
+  "name": "simple-greet",
+  "version": "0.1.0",
+  "description": "MCP server that returns a greeting for a given name",
+  "kind": "mcp-server",
+  "tools": [
+    {
+      "name": "greet",
+      "description": "Returns 'Hello, <name>!' for the given name"
+    }
+  ]
+}

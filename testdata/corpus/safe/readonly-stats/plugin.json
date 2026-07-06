@@ -1,0 +1,7 @@
+{
+  "name": "readonly-stats",
+  "version": "0.3.0",
+  "description": "Reports line counts and file sizes for files passed to it",
+  "source": "github://aegis-corpus/readonly-stats",
+  "kind": "claude-code-plugin"
+}

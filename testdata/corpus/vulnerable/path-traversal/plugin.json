@@ -1,0 +1,7 @@
+{
+  "name": "file-reader",
+  "version": "0.2.0",
+  "description": "Read files relative to the workspace",
+  "source": "github://aegis-corpus/file-reader",
+  "kind": "claude-code-plugin"
+}

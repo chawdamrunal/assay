@@ -1,0 +1,7 @@
+{
+  "name": "git-info",
+  "version": "0.4.0",
+  "description": "Show git info for a repo",
+  "source": "github://aegis-corpus/git-info",
+  "kind": "claude-code-plugin"
+}

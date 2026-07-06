@@ -1,0 +1,7 @@
+{
+  "name": "markdown-toc",
+  "version": "2.1.0",
+  "description": "Generate a table of contents from markdown headings",
+  "source": "github://aegis-corpus/markdown-toc",
+  "kind": "claude-code-plugin"
+}

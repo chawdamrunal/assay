@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/chawdamrunal/assay/schemas/verdict-v0.1.json",
+  "title": "Assay Verdict v0.1",
+  "description": "Machine-readable security audit verdict produced by Assay.",
+  "type": "object",
+  "required": ["schema_version", "scan_id", "target", "scanned_at", "scanner", "verdict", "findings"],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "scan_id": {"type": "string", "format": "uuid"},
+    "target": {
+      "type": "object",
+      "required": ["kind", "name"],
+      "properties": {
+        "kind": {"type": "string", "enum": ["claude-code-plugin", "mcp-server", "connector", "skill", "hook", "settings", "other"]},
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "source": {"type": "string"},
+        "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "scanned_at": {"type": "string", "format": "date-time"},
+    "scanner": {
+      "type": "object",
+      "required": ["name", "version", "model", "prompt_version"],
+      "properties": {
+        "name": {"const": "assay"},
+        "version": {"type": "string"},
+        "model": {"type": "string"},
+        "prompt_version": {"type": "string"}
+      }
+    },
+    "verdict": {"type": "string", "enum": ["safe", "caution", "unsafe"]},
+    "summary": {"type": "string"},
+    "data_flow_diagram": {"type": "string"},
+    "threat_model": {"type": "string"},
+    "claims_vs_reality": {"type": "string"},
+    "prior_scan_id": {"type": "string"},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "severity", "category", "title"],
+        "properties": {
+          "id": {"type": "string"},
+          "severity": {"type": "string", "enum": ["critical", "high", "medium", "low", "info"]},
+          "category": {"type": "string"},
+          "title": {"type": "string"},
+          "description": {"type": "string"},
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["file", "line", "snippet"],
+              "properties": {
+                "file": {"type": "string"},
+                "line": {"type": "integer", "minimum": 1},
+                "snippet": {"type": "string"}
+              }
+            }
+          },
+          "context": {"type": "string"},
+          "impact": {"type": "string"},
+          "mitigation": {"type": "string"},
+          "exploit_scenario": {"type": "string"},
+          "recommended_action": {"type": "string"},
+          "threat_id": {"type": "string"},
+          "source": {"type": "string", "enum": ["llm", "sca", "poison"]},
+          "diff": {
+            "type": "object",
+            "required": ["status"],
+            "properties": {
+              "status": {"type": "string", "enum": ["new", "stable", "changed", "resolved"]},
+              "since_scan": {"type": "string"},
+              "prior_id": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "open_questions": {"type": "array", "items": {"type": "string"}},
+    "signatures": {"type": "array"}
+  }
+}

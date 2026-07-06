@@ -1,0 +1,43 @@
+# Binaries
+/assay
+/assay.exe
+/dist/
+/bin/
+
+# Test artifacts
+*.test
+*.out
+coverage.txt
+
+# Editor
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Local development
+.env
+*.local
+
+# Assay runtime data (when binary runs in repo)
+.assay/
+
+# Frontend
+/web/node_modules/
+/web/dist/
+/web/.vite/
+/web/*.tsbuildinfo
+/web/vite.config.d.ts
+/web/vite.config.js
+/internal/api/dist/
+/web/pnpm-workspace.yaml
+
+# Playwright MCP session artifacts (console logs, snapshots, screenshots)
+.playwright-mcp/
+
+# Dev screenshots & scratch artifacts (never publish)
+/*.png
+/scan-report-snapshot.md
+
+# Claude Code local runtime state
+/.claude/

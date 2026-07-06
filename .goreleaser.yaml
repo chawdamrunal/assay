@@ -1,0 +1,219 @@
+# .goreleaser.yaml — Assay release pipeline
+# Test locally:   goreleaser release --snapshot --clean --skip=publish
+# Real release:   git tag v0.1.0 && git push --tags  (CI runs `goreleaser release --clean`)
+version: 2
+
+project_name: assay
+
+before:
+  hooks:
+    # Build the frontend and copy it into the Go embed location.
+    - pnpm --dir web install --frozen-lockfile
+    - pnpm --dir web build
+    - sh -c "rm -rf internal/api/dist && mkdir -p internal/api/dist && cp -r web/dist/. internal/api/dist/"
+
+builds:
+  - id: assay
+    main: ./cmd/assay
+    binary: assay
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.buildDate={{.Date}}
+
+archives:
+  - id: assay-archive
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+      - SECURITY.md
+      - docs/threat-model-2026.md
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+signs:
+  - cmd: cosign
+    args:
+      - "sign-blob"
+      - "--yes"
+      - "--output-certificate=${certificate}"
+      - "--output-signature=${signature}"
+      - "${artifact}"
+    artifacts: checksum
+    certificate: "${artifact}.pem"
+    signature: "${artifact}.sig"
+    output: true
+
+dockers:
+  - image_templates:
+      - "ghcr.io/chawdamrunal/assay:{{ .Version }}-amd64"
+      - "ghcr.io/chawdamrunal/assay:latest-amd64"
+    use: buildx
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.title=assay"
+      - "--label=org.opencontainers.image.description=Security scanner for the AI dev stack"
+      - "--label=org.opencontainers.image.url=https://github.com/chawdamrunal/assay"
+      - "--label=org.opencontainers.image.source=https://github.com/chawdamrunal/assay"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.revision={{ .Commit }}"
+      - "--label=org.opencontainers.image.licenses=Apache-2.0"
+    goos: linux
+    goarch: amd64
+    extra_files:
+      - LICENSE
+      - README.md
+
+  - image_templates:
+      - "ghcr.io/chawdamrunal/assay:{{ .Version }}-arm64"
+      - "ghcr.io/chawdamrunal/assay:latest-arm64"
+    use: buildx
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.title=assay"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.revision={{ .Commit }}"
+      - "--label=org.opencontainers.image.licenses=Apache-2.0"
+    goos: linux
+    goarch: arm64
+    extra_files:
+      - LICENSE
+      - README.md
+
+docker_manifests:
+  - name_template: "ghcr.io/chawdamrunal/assay:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/chawdamrunal/assay:{{ .Version }}-amd64"
+      - "ghcr.io/chawdamrunal/assay:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/chawdamrunal/assay:latest"
+    image_templates:
+      - "ghcr.io/chawdamrunal/assay:latest-amd64"
+      - "ghcr.io/chawdamrunal/assay:latest-arm64"
+
+brews:
+  - repository:
+      owner: chawdamrunal
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Formula
+    homepage: "https://github.com/chawdamrunal/assay"
+    description: "Security scanner for the AI dev stack — Sonnet-driven threat modeling for Claude Code plugins, MCP servers, and connectors."
+    license: "Apache-2.0"
+    test: |
+      system "#{bin}/assay version"
+    install: |
+      bin.install "assay"
+
+# WinGet — opens a manifest PR to microsoft/winget-pkgs on each release, so
+# Windows users get `winget install AssaySec.Assay`. Requires:
+#   1. A fork of microsoft/winget-pkgs at chawdamrunal/winget-pkgs.
+#   2. A WINGET_GITHUB_TOKEN secret (PAT with write access to that fork).
+# NOTE: Microsoft's validation downloads the installer from the Release asset
+# URL, so the GitHub Release must be PUBLISHED (not draft) for the winget PR to
+# pass. With `release.draft: true` below, un-draft the release before the PR is
+# validated. The Windows archive is a .zip (see format_overrides); goreleaser
+# emits a portable/zip manifest pointing at assay.exe.
+winget:
+  - name: assay
+    publisher: AssaySec
+    package_identifier: AssaySec.Assay
+    short_description: "Security scanner for the AI dev stack — Sonnet-driven threat modeling for Claude Code plugins, MCP servers, and connectors."
+    description: |
+      Assay reasons about an artifact with an LLM ("LLM as judge, not janitor")
+      to produce a safe / caution / unsafe verdict for Claude Code plugins, MCP
+      servers, hooks, and connectors — threat model first, then investigate.
+    license: "Apache-2.0"
+    license_url: "https://github.com/chawdamrunal/assay/blob/main/LICENSE"
+    homepage: "https://github.com/chawdamrunal/assay"
+    publisher_url: "https://github.com/chawdamrunal/assay"
+    publisher_support_url: "https://github.com/chawdamrunal/assay/issues"
+    release_notes_url: "https://github.com/chawdamrunal/assay/releases/tag/{{ .Tag }}"
+    tags:
+      - security
+      - scanner
+      - mcp
+      - claude-code
+      - devsecops
+    repository:
+      owner: chawdamrunal
+      name: winget-pkgs
+      branch: "assay-{{ .Version }}"
+      token: "{{ .Env.WINGET_GITHUB_TOKEN }}"
+      pull_request:
+        enabled: true
+        draft: false
+        base:
+          owner: microsoft
+          name: winget-pkgs
+          branch: master
+
+release:
+  draft: true
+  github:
+    owner: chawdamrunal
+    name: assay
+  name_template: "Assay {{ .Version }}"
+  header: |
+    ## Assay {{ .Version }}
+
+    Security scanner for the AI dev stack. See `CHANGELOG.md` for details.
+
+    ### Install
+    ```
+    curl -sSL https://github.com/chawdamrunal/assay/install | sh
+    ```
+    Or grab the tarball / Homebrew formula / Docker image below.
+  footer: |
+    ---
+    *Published under Apache-2.0. Read the [threat-model-2026 document](https://github.com/chawdamrunal/assay/blob/main/docs/threat-model-2026.md) for the threats Assay is designed to catch.*
+
+changelog:
+  use: git
+  sort: asc
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w]*:+.*$"
+      order: 0
+    - title: Fixes
+      regexp: "^.*fix[(\\w]*:+.*$"
+      order: 1
+    - title: Tests
+      regexp: "^.*test[(\\w]*:+.*$"
+      order: 2
+    - title: Documentation
+      regexp: "^.*docs[(\\w]*:+.*$"
+      order: 3
+    - title: Other
+      order: 999
+  filters:
+    exclude:
+      - "^chore:"
+      - "^style:"
+      - "Merge pull request"
+      - "Merge branch"
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-snapshot"

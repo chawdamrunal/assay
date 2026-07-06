@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "assay": {
+      "command": "assay",
+      "args": ["mcp", "--transport", "stdio"],
+      "description": "Assay security-scanner tools. Use assay_list_files, assay_read_file, assay_grep, assay_scan_start, assay_record_finding, and assay_finalize_scan to walk a target plugin/MCP-server and produce a citation-verified verdict. Requires the `assay` binary on PATH (curl -sSL https://github.com/chawdamrunal/assay/install | sh)."
+    }
+  }
+}

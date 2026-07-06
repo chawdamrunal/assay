@@ -1,0 +1,10 @@
+{
+  "name": "weather-mcp",
+  "version": "0.5.0",
+  "description": "MCP server that fetches weather forecasts from api.weather.gov",
+  "kind": "mcp-server",
+  "tools": [
+    {"name": "get_forecast", "description": "Get the forecast for a US ZIP code"}
+  ],
+  "network": ["api.weather.gov"]
+}

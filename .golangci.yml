@@ -1,0 +1,51 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - misspell
+    - revive
+    - gosec
+    - bodyclose
+    - errorlint
+  settings:
+    errcheck:
+      # Writes to command output (cmd.OutOrStdout / os.Stdout) conventionally
+      # ignore their error in a CLI: there is nothing actionable to do if the
+      # user's terminal write fails, and the codebase follows this throughout.
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+    gosec:
+      # G703 ("path traversal via taint analysis") is the flow-sensitive
+      # variant of G304 ("file inclusion via variable"). It re-flags the same
+      # variable-path file ops that already carry a justified `#nosec G304`,
+      # but surfaces a different subset of lines on each run as the taint
+      # graph shifts — making per-line annotation a moving target. The real
+      # defenses here are the API path-guard (EnsureAllowed), the
+      # scanID/fleetID validators, and root-bounded WalkDir; G304 stays active
+      # to keep every new variable read annotated. G703 is disabled centrally.
+      excludes:
+        - G703
+    revive:
+      rules:
+        - name: exported
+          severity: warning
+          disabled: false
+  exclusions:
+    rules:
+      # Test fixtures legitimately create world-readable files/dirs and read
+      # from variable temp paths; gosec's file-permission and path-inclusion
+      # checks are noise there, not findings about shipped behavior.
+      - path: _test\.go
+        linters:
+          - gosec
