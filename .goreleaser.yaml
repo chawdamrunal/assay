@@ -128,7 +128,7 @@ brews:
       bin.install "assay"
 
 # WinGet — opens a manifest PR to microsoft/winget-pkgs on each release, so
-# Windows users get `winget install AssaySec.Assay`. Requires:
+# Windows users get `winget install chawdamrunal.Assay`. Requires:
 #   1. A fork of microsoft/winget-pkgs at chawdamrunal/winget-pkgs.
 #   2. A WINGET_GITHUB_TOKEN secret (PAT with write access to that fork).
 # NOTE: Microsoft's validation downloads the installer from the Release asset
@@ -138,8 +138,8 @@ brews:
 # emits a portable/zip manifest pointing at assay.exe.
 winget:
   - name: assay
-    publisher: AssaySec
-    package_identifier: AssaySec.Assay
+    publisher: chawdamrunal
+    package_identifier: chawdamrunal.Assay
     short_description: "Security scanner for the AI dev stack — Sonnet-driven threat modeling for Claude Code plugins, MCP servers, and connectors."
     description: |
       Assay reasons about an artifact with an LLM ("LLM as judge, not janitor")

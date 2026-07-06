@@ -1,9 +1,19 @@
-# Assay
+<p align="center">
+  <img src="docs/assets/assay-banner.svg" alt="Assay — security scanner for the AI dev stack" width="820">
+</p>
 
-> Security scanner for the AI dev stack. Sonnet/Opus-driven threat modeling — not pattern matching — for Claude Code plugins, MCP servers, hooks, and settings. Runs on top of your Claude Code subscription; no separate API key required.
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-4A3ED4" alt="License: Apache-2.0"></a>
+  <img src="https://img.shields.io/badge/Go-1.25%2B-00ADD8?logo=go&logoColor=white" alt="Go 1.25+">
+  <img src="https://img.shields.io/badge/status-pre--1.0-8A8FA0" alt="Status: pre-1.0">
+  <img src="https://img.shields.io/badge/MCP-server-4A3ED4" alt="MCP server">
+  <a href="https://github.com/chawdamrunal/assay/stargazers"><img src="https://img.shields.io/github/stars/chawdamrunal/assay?color=4A3ED4" alt="GitHub stars"></a>
+</p>
 
-<!-- demo gif placeholder -->
-<p align="center"><i>(demo GIF coming soon)</i></p>
+<p align="center">
+  <b>Reasons about an artifact with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning in Claude Code plugins, MCP servers, hooks, skills &amp; connectors.</b><br>
+  Runs on your <b>Claude Code subscription</b> — no separate API key required.
+</p>
 
 ## What it does
 
@@ -50,9 +60,9 @@ For default-mode scans you also need the Claude Code CLI (`claude`) on your PATH
 These are wired up via `install.sh`, `install.ps1`, and `.goreleaser.yaml` and go live once the first `v*.*.*` release is published:
 
 ```bash
-curl -sSL https://github.com/chawdamrunal/assay/install | sh          # macOS / Linux / WSL, checksum-verified
-irm https://github.com/chawdamrunal/assay/install.ps1 | iex           # Windows PowerShell, checksum-verified
-winget install AssaySec.Assay                          # Windows (WinGet)
+curl -fsSL https://raw.githubusercontent.com/chawdamrunal/assay/main/install.sh | sh   # macOS / Linux / WSL, checksum-verified
+irm https://raw.githubusercontent.com/chawdamrunal/assay/main/install.ps1 | iex        # Windows PowerShell, checksum-verified
+winget install chawdamrunal.Assay                                                      # Windows (WinGet)
 brew install chawdamrunal/tap/assay                       # Homebrew
 docker run --rm -v ~/.claude:/scan ghcr.io/chawdamrunal/assay:latest scan /scan
 /plugin install chawdamrunal/assay                        # inside Claude Code
@@ -137,31 +147,9 @@ What Assay does *not* try to do in v0 (deferred to future versions):
 
 ## How it works
 
-```
-                MCP-mode (default)                    Legacy in-process mode
-                ─────────────────                     ──────────────────────
-                                                       (--scan-mode legacy)
-  User clicks "New Scan" in web UI                    User clicks "New Scan"
-              │                                                 │
-              ▼                                                 ▼
-  assay serve spawns `claude -p`                     assay serve calls scanner.Scan()
-  with assay MCP wired in                            with Anthropic SDK + 429 retry
-              │                                                 │
-              ▼                                                 ▼
-  Claude Code reads assay_methodology                Go orchestrator walks 5 stages
-  prompt, calls assay_* tools:                       in-process:
-   • assay_list_files / read_file / grep              • Pre-pass (secrets, OSV, regex)
-   • assay_parse_manifest / secret_scan               • Triage → Claims → Threat Model
-   • assay_emit_progress                              • Parallel sub-agent investigation
-   • assay_record_finding (per evidence)              • Exploitability + Synthesis
-   • assay_finalize_scan
-              │                                                 │
-              ▼                                                 ▼
-  events.jsonl + findings.jsonl ─────► verdict.Validate (re-reads cited file:line)
-              │                              │
-              ▼                              ▼
-            audit.json + audit.md  (same on-disk format both modes)
-```
+<p align="center">
+  <img src="docs/assets/architecture.svg" alt="Assay scan architecture — MCP mode and legacy mode both produce audit.json + audit.md" width="820">
+</p>
 
 Read the design in [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -175,7 +163,24 @@ Read the design in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Status
 
-Pre-1.0 and under active development. The MCP-server architecture is the default scan path; the legacy in-process orchestrator remains as an API-key / CI fallback. See [CHANGELOG.md](CHANGELOG.md) for the current feature set and the [design spec](docs/superpowers/specs/2026-05-14-assay-design.md) for the roadmap (Rings 1–3).
+Pre-1.0 and under active development. The MCP-server architecture is the default scan path; the legacy in-process orchestrator remains as an API-key / CI fallback. See [CHANGELOG.md](CHANGELOG.md) for the current feature set and [ARCHITECTURE.md](ARCHITECTURE.md) for the design and roadmap.
+
+## FAQ
+
+**How is this different from Snyk, Socket, or Cisco's MCP Scanner?**
+Those focus on dependency CVEs or network-level guardrails. Assay reasons about the *artifact's behavior* with an LLM — it threat-models what a Claude Code plugin or MCP server can actually do, then reads the code for evidence, with every finding backed by a verbatim `file:line` quote (confabulations are re-read and dropped).
+
+**Does it need an Anthropic API key?**
+No. Default mode runs on your existing **Claude Code subscription** via `claude -p`. An API key is only needed for the `--scan-mode legacy` / CI fallback.
+
+**What is "MCP tool poisoning"?**
+An MCP server that passes review, then later mutates a tool description to smuggle malicious instructions to the agent. It's one of the AI-dev-stack threat classes Assay models — see [docs/threat-model-2026.md](docs/threat-model-2026.md).
+
+**Can it scan a GitHub repo I haven't installed?**
+Yes — point it at `github.com/owner/repo`. Public repos need nothing; private ones resolve a token from the OS keychain, `GITHUB_TOKEN`/`GH_TOKEN`, or `gh auth token`.
+
+**Does my source code leave my machine?**
+Only the snippets Assay chooses to read are sent to the reasoning model (Claude Code, or the Anthropic API in legacy mode). Nothing else.
 
 ## Contributing
 

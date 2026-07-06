@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 300" width="1280" height="300" role="img" aria-label="Assay — security scanner for the AI dev stack">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FCFCFE"/>
+      <stop offset="1" stop-color="#EFEFFA"/>
+    </linearGradient>
+    <linearGradient id="tile" x1="0" y1="0" x2="150" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#736BF3"/>
+      <stop offset="1" stop-color="#4A3ED4"/>
+    </linearGradient>
+    <filter id="s" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#4A3ED4" flood-opacity="0.20"/>
+    </filter>
+  </defs>
+  <rect x="1" y="1" width="1278" height="298" rx="26" fill="url(#bg)" stroke="#E6E7EF"/>
+  <g transform="translate(84,77)">
+    <rect width="146" height="146" rx="36" fill="url(#tile)" filter="url(#s)"/>
+    <path d="M73 33 L110 48 V80 C110 103 93 118 73 125 C53 118 36 103 36 80 V48 Z" fill="#FFFFFF" opacity="0.15"/>
+    <path d="M56 79 l12 13 l25 -28" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="286" y="138" font-family="system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="92" font-weight="800" fill="#1E2029" letter-spacing="-3">Assay</text>
+  <text x="290" y="184" font-family="system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="27" font-weight="500" fill="#5A6070">Security scanner for the AI dev stack</text>
+  <g transform="translate(290,210)">
+    <rect width="404" height="44" rx="11" fill="#FFFFFF" stroke="#E2E3EC"/>
+    <text x="20" y="29" font-family="ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-size="18" font-weight="700" fill="#4A3ED4">$</text>
+    <text x="40" y="29" font-family="ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-size="18" fill="#3A3E4A">assay scan .</text>
+    <text x="196" y="29" font-family="ui-monospace,monospace" font-size="16" fill="#9096A6">&#8594;</text>
+    <g transform="translate(220,11)">
+      <rect width="164" height="22" rx="11" fill="#E9F7EF"/>
+      <circle cx="17" cy="11" r="4" fill="#3FA372"/>
+      <text x="30" y="15.5" font-family="ui-monospace,monospace" font-size="12.5" font-weight="700" fill="#2E7D54">verdict: safe</text>
+    </g>
+  </g>
+</svg>
