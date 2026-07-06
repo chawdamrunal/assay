@@ -109,7 +109,11 @@ func ParseIntent(message string) Intent {
 	// "scan https://github.com/foo/bar" doesn't get reduced to target="bar".
 	if m := reGitHubURL.FindStringSubmatch(s); m != nil {
 		owner := strings.ToLower(m[1])
-		repo := strings.ToLower(m[2])
+		// Strip a trailing ".git" so a clone-style URL
+		// (github.com/owner/repo.git) resolves to repo "repo", not "repo.git"
+		// — otherwise the cloner appends another ".git" and the clone 404s.
+		// GitHub disallows repo names ending in ".git", so this is always safe.
+		repo := strings.TrimSuffix(strings.ToLower(m[2]), ".git")
 		return Intent{
 			Action:      ActionScanGitHub,
 			Target:      repo,
@@ -127,7 +131,11 @@ func ParseIntent(message string) Intent {
 		!strings.Contains(s, "/api/") && !strings.Contains(s, "://") &&
 		looksLikeRepoRef(m[1], m[2]) {
 		owner := strings.ToLower(m[1])
-		repo := strings.ToLower(m[2])
+		// Strip a trailing ".git" so a clone-style URL
+		// (github.com/owner/repo.git) resolves to repo "repo", not "repo.git"
+		// — otherwise the cloner appends another ".git" and the clone 404s.
+		// GitHub disallows repo names ending in ".git", so this is always safe.
+		repo := strings.TrimSuffix(strings.ToLower(m[2]), ".git")
 		return Intent{
 			Action:      ActionScanGitHub,
 			Target:      repo,

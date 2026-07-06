@@ -101,6 +101,24 @@ func TestParseIntent(t *testing.T) {
 			},
 		},
 		{
+			name: "github full URL with .git suffix (clone-style URL)",
+			in:   "scan https://github.com/chawdamrunal/assay.git",
+			want: Intent{
+				Action: ActionScanGitHub, Target: "assay",
+				GithubOwner: "chawdamrunal", GithubRepo: "assay",
+				GithubURL: "https://github.com/chawdamrunal/assay",
+			},
+		},
+		{
+			name: "github short form with .git suffix",
+			in:   "scan chawdamrunal/assay.git",
+			want: Intent{
+				Action: ActionScanGitHub, Target: "assay",
+				GithubOwner: "chawdamrunal", GithubRepo: "assay",
+				GithubURL: "https://github.com/chawdamrunal/assay",
+			},
+		},
+		{
 			name: "shortform yes/no must NOT be a repo ref",
 			in:   "yes/no",
 			want: Intent{Action: ActionUnknown},
