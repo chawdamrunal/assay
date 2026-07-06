@@ -24,7 +24,12 @@
 </p>
 
 <!-- ▶ DEMO — replace this block with your recording (a linked thumbnail, a GIF, or a <video> tag). -->
-<p align="center"><em>▶ Demo video coming soon</em></p>
+<p align="center"><em>▶ Demo video </em></p>
+
+
+https://github.com/user-attachments/assets/8e6e1c3f-358a-4cf1-a50c-6e15fbf43c75
+
+
 
 ---
 
