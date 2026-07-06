@@ -28,6 +28,23 @@ const BOUNDARY_PAD_X = 26;
 const BOUNDARY_PAD_TOP = 30; // extra room for the boundary label
 const BOUNDARY_PAD_BOT = 22;
 
+// The rendered FlowNode height must equal the height dagre reserved, or a
+// multi-line label grows the box past its slot and overlaps its neighbours.
+// We can't measure text before layout, so estimate from the label: explicit
+// newlines + a conservative word-wrap at the node's content width. Erring
+// slightly tall is safe (a little extra room); erring short clips/overlaps.
+const NODE_LINE_H = 17; // 13px semibold, leading-tight
+const NODE_PAD_Y = 24; // vertical padding + border + breathing room
+const NODE_CHARS_PER_LINE = 19; // ~166px content width (190 − 2×12) at 13px semibold
+
+function estimateNodeHeight(label: string): number {
+  const lines = label.split('\n').reduce((sum, ln) => {
+    const len = ln.trim().length;
+    return sum + Math.max(1, Math.ceil(len / NODE_CHARS_PER_LINE));
+  }, 0);
+  return Math.max(NODE_H, lines * NODE_LINE_H + NODE_PAD_Y);
+}
+
 // Per-kind node styling, driven by the app's design tokens so it themes in
 // light + dark. Mirrors the legend below and the methodology's classDef colours.
 const KIND_STYLE: Record<FlowKind, string> = {
@@ -51,11 +68,14 @@ const HIDDEN_HANDLE = {
 } as const;
 
 function FlowNode({ data }: NodeProps) {
-  const d = data as { label: string; kind: FlowKind };
+  const d = data as { label: string; kind: FlowKind; height?: number };
   return (
     <div
-      style={{ width: NODE_W }}
-      className={`rounded-xl border px-3 py-2.5 text-center shadow-[var(--shadow-card)] ${KIND_STYLE[d.kind]}`}
+      // Fixed to the height dagre laid out with (estimateNodeHeight), so the box
+      // and its reserved slot always agree — a content-sized box would grow past
+      // the slot and collide with neighbours.
+      style={{ width: NODE_W, height: d.height ?? NODE_H }}
+      className={`flex items-center justify-center rounded-xl border px-3 text-center shadow-[var(--shadow-card)] ${KIND_STYLE[d.kind]}`}
     >
       <Handle type="target" position={Position.Left} style={HIDDEN_HANDLE} />
       <div className="whitespace-pre-line break-words text-[13px] font-semibold leading-tight">{d.label}</div>
@@ -95,7 +115,7 @@ function layout(graph: Graph, colors: ReturnType<typeof resolveColors>): { nodes
   g.setDefaultEdgeLabel(() => ({}));
 
   for (const b of graph.boundaries) g.setNode(b.id, { label: b.label });
-  for (const n of graph.nodes) g.setNode(n.id, { width: NODE_W, height: NODE_H });
+  for (const n of graph.nodes) g.setNode(n.id, { width: NODE_W, height: estimateNodeHeight(n.label) });
   for (const b of graph.boundaries) {
     for (const mid of b.members) {
       if (graph.nodes.some((n) => n.id === mid)) g.setParent(mid, b.id);
@@ -128,11 +148,13 @@ function layout(graph: Graph, colors: ReturnType<typeof resolveColors>): { nodes
   for (const n of graph.nodes) {
     const gn = g.node(n.id);
     if (!gn) continue;
+    // gn.height is the value set above — use it for both centering and the
+    // rendered box so the layout slot and the box agree exactly.
     nodes.push({
       id: n.id,
       type: 'flow',
-      position: { x: gn.x - NODE_W / 2, y: gn.y - NODE_H / 2 },
-      data: { label: n.label, kind: n.kind },
+      position: { x: gn.x - NODE_W / 2, y: gn.y - gn.height / 2 },
+      data: { label: n.label, kind: n.kind, height: gn.height },
       draggable: false,
       zIndex: 1,
     });
