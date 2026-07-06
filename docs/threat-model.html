@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Threat model — 12 AI dev-stack security classes | Assay</title>
+<meta name="description" content="A defensive taxonomy of 12 threat classes for the Claude Code and MCP ecosystem: prompt injection, MCP tool poisoning, cross-tool exfiltration, confused-deputy escalation, supply-chain, hook abuse, credential exfiltration, and connector OAuth-scope overreach.">
+<link rel="canonical" href="https://chawdamrunal.github.io/assay/threat-model.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The 12 AI dev-stack threat classes — Assay threat model">
+<meta property="og:description" content="A defensive taxonomy for Claude Code & MCP security: prompt injection, tool poisoning, credential exfiltration, supply chain, connector OAuth-scope overreach, and more.">
+<meta property="og:image" content="https://chawdamrunal.github.io/assay/assets/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://chawdamrunal.github.io/assay/assets/social-card.png">
+<link rel="icon" type="image/svg+xml" href="assets/assay-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+<style>
+  .tclass{border-top:1px solid var(--line);padding-top:20px;margin-top:26px}
+  .tmeta{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+  .tmeta span{font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;border:1px solid var(--line);color:var(--muted)}
+  .sev-crit{color:#C0392B;border-color:rgba(192,57,43,.4)} .sev-high{color:#B9600F;border-color:rgba(185,96,15,.4)}
+  .sev-med{color:#8F6912;border-color:rgba(143,105,18,.4)}
+  .cov-yes{color:var(--ok);border-color:rgba(46,125,84,.4)}
+  h2 .tn{font-family:"JetBrains Mono",monospace;font-size:.7em;color:var(--accent);margin-right:8px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="brand" href="index.html"><img src="assets/assay-mark.svg" alt=""> Assay</a>
+  <div class="nav-links">
+    <a href="index.html">Docs</a>
+    <a href="installation.html">Install</a>
+    <a href="quickstart.html">Quickstart</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="threat-model.html" class="active">Threats</a>
+    <a href="faq.html">FAQ</a>
+    <a href="https://github.com/chawdamrunal/assay">GitHub &#8599;</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+  <div class="eyebrow">Threat model · 2026</div>
+  <h1>The 12 threat classes of the AI dev stack</h1>
+  <p class="lede">A defensive taxonomy for the Claude Code, Model Context Protocol (MCP), and agent-dev ecosystem — think OWASP Top 10 for AI tooling. Traditional SAST + dependency scanning miss these because the dangerous behavior is often legal code with bad intent, the manifest's capability claims aren't compiler-enforced, and the agent is a new execution environment that can be talked into calling tools it shouldn't. These are the classes Assay reasons about.</p>
+
+  <div class="tclass">
+    <h2><span class="tn">T1</span>Prompt injection via tool descriptions or responses</h2>
+    <div class="tmeta"><span>MCP servers</span><span class="sev-crit">critical</span></div>
+    <p>A malicious or compromised MCP server returns content that looks like normal tool output but is structured to be re-read by the agent as instructions (indirect prompt injection). Both the tool <em>description</em> registered at handshake and the tool <em>response strings</em> are read in the model's instruction context — untrusted bytes become trusted commands.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T2</span>Capability vs. claim mismatch</h2>
+    <div class="tmeta"><span>all artifacts</span><span class="sev-high">high</span><span class="cov-yes">Assay detects</span></div>
+    <p>The README, manifest, or tool description advertises one set of behaviors; the code implements a broader or different set. A "Markdown formatter" that opens sockets and reads dotfiles. The deception <em>is</em> the gap — and computing that claim-vs-code diff is Assay's headline behavior.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T3</span>Cross-tool exfiltration chains</h2>
+    <div class="tmeta"><span>MCP / plugin bundles</span><span class="sev-crit">critical</span></div>
+    <p>No single tool is dangerous alone. Tool A reads a sensitive file; tool B makes outbound requests. Asked for an innocent workflow, the agent composes them — read this log, file an issue with the contents — and data leaves the machine. The vulnerability is structural, at the agent layer, not in any one function.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T4</span>Confused-deputy escalation</h2>
+    <div class="tmeta"><span>plugins / MCP</span><span class="sev-high">high</span></div>
+    <p>An innocent-looking tool wraps a dangerous one and inherits the agent's trust context. The user approved <code>format_repo</code>, not the <code>Bash</code> call it constructs internally — so they've functionally approved everything the wrapper transitively does.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T5</span>Supply-chain attacks via updates</h2>
+    <div class="tmeta"><span>all artifacts</span><span class="sev-crit">critical</span></div>
+    <p>1.0.0 was clean; 1.0.1 isn't. Same identity, changed content. Account takeover, typosquatting (<code>rainbow-formatter</code> vs <code>rainbow-formatter-2</code>), and dependency-chain compromise all transplant directly from npm/PyPI to plugin and MCP registries. A snapshot scan says nothing about the next version — so re-scan on every update.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T6</span>Hook abuse</h2>
+    <div class="tmeta"><span>plugins / settings</span><span class="sev-high">high</span><span class="cov-yes">Assay detects</span></div>
+    <p>Hooks run shell commands on lifecycle events (<code>UserPromptSubmit</code>, <code>SessionStart</code>). Every registered hook is a persistent shell-exec on the user's machine, triggered by events they don't associate with the plugin that installed it — and it can survive uninstall if <code>settings.json</code> isn't also cleaned.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T7</span>Settings drift</h2>
+    <div class="tmeta"><span>settings</span><span class="sev-med">medium</span></div>
+    <p>A broad permission granted months ago — <code>Bash(*)</code>, <code>Write(*)</code>, <code>WebFetch(*)</code> — is still live and forgotten. New plugins inherit those grants without the user being reprompted, quietly removing the guardrails they assumed were there.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T8</span>Credential / secret exfiltration</h2>
+    <div class="tmeta"><span>all artifacts</span><span class="sev-crit">critical</span><span class="cov-yes">Assay detects</span></div>
+    <p>The artifact reads credential files (<code>~/.ssh</code>, <code>~/.aws</code>, <code>~/.gnupg</code>, <code>~/.kube</code>, <code>.env</code>) and sends them somewhere unauthorized. Read, send. The mechanics aren't subtle — the volume of artifacts to review is what lets it slip through. Assay's most reliable detection: it traces data flow from credential reads to network sinks.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T9</span>Filesystem read/write overreach</h2>
+    <div class="tmeta"><span>all artifacts</span><span class="sev-high">medium–high</span><span class="cov-yes">Assay detects</span></div>
+    <p>The artifact reaches beyond its declared scope — a linter reading all of <code>$HOME</code>, a doc generator following symlinks out of the project, a test runner writing predictably-named files into <code>/tmp</code>. A privacy issue, a compliance issue, and a footgun.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T10</span>Cost-bleed / DoS</h2>
+    <div class="tmeta"><span>MCP / plugins</span><span class="sev-med">medium</span></div>
+    <p>Economic denial of service: no data taken, no machine broken — the bill spikes. An MCP server returns enormous responses to drain context; a hook prepends a multi-KB preamble to every prompt; a tool description is megabytes long. The user pays per token; the artifact dictates the tokens.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T11</span>Skill capability-grant &amp; auto-activation abuse</h2>
+    <div class="tmeta"><span>skills</span><span class="sev-high">high</span></div>
+    <p>A skill is natural-language instruction plus a capability grant. A "commit-message formatter" declares <code>allowed-tools: [Bash, Write]</code> (far more than formatting needs), and a broadly-written <code>description</code> auto-activates it on tasks the user never associated with it — at which point its body's instructions execute in the user's context.</p>
+  </div>
+
+  <div class="tclass">
+    <h2><span class="tn">T12</span>Connector OAuth-scope &amp; remote-egress overreach</h2>
+    <div class="tmeta"><span>claude.ai connectors</span><span class="sev-high">high</span></div>
+    <p>A hosted connector the user authorizes once, then it speaks to the model under the granted OAuth scopes. The risk is the gap between the scopes and data-egress it requests and what its purpose needs — compounded by a closed-source implementation the user can't audit. Assay reviews the declared metadata and is explicit about what it can't see.</p>
+  </div>
+
+  <hr>
+  <p>This is the 2026 edition (static analysis / Ring 0). The full write-up — with per-class indicators, author mitigations, and exactly how Assay detects each — is in <a href="https://github.com/chawdamrunal/assay/blob/main/docs/threat-model-2026.md">docs/threat-model-2026.md</a>. See also <a href="how-it-works.html">How it works</a> for the 5-stage methodology that maps findings to these classes.</p>
+
+  <div class="pager"><a href="how-it-works.html">&#8592; How it works</a><a href="faq.html">FAQ &#8594;</a></div>
+</div>
+
+<footer class="foot">Assay — security scanner for the AI dev stack · <a href="https://github.com/chawdamrunal/assay">github.com/chawdamrunal/assay</a> · Apache-2.0</footer>
+</body>
+</html>

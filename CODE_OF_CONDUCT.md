@@ -14,7 +14,7 @@ This Code of Conduct applies in all project spaces (issues, PRs, discussions, ch
 
 If you experience or witness behavior that violates this code, report it to:
 
-- **Email:** `conduct@github.com/chawdamrunal/assay` (placeholder — will be updated before v1.0)
+- **GitHub:** contact the maintainer, [@chawdamrunal](https://github.com/chawdamrunal) (a dedicated address will be added before v1.0)
 
 All reports are reviewed promptly and confidentially. The project maintainers will determine consequences in line with the Contributor Covenant's enforcement guidelines (see the full text linked above).
 

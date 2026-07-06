@@ -99,7 +99,7 @@ Pre-`v0.1.0`: editing `v1/` in place is fine. After `v0.1.0`: non-backward-compa
 
 ## Conventions
 
-- **Spec-first for anything touching the scan pipeline, prompts, or agent loop** (spec → numbered plan → TDD commits). Examples in `docs/superpowers/`. Small bugfixes can skip the spec.
+- **Spec-first for anything touching the scan pipeline, prompts, or agent loop** (spec → numbered plan → TDD commits). Small bugfixes can skip the spec.
 - **Exit codes matter for CI.** `main.go` uses `exitCodeError` so a triggered `--fail-on` gate exits **2** (found problems) vs **1** (tool crashed). `fail_on` precedence: `--fail-on` flag > `policy.fail_on` > default `unsafe`.
 - **`internal/` is deliberate** — Assay is a tool, not a library. Programmatic consumers should parse `audit.json` (versioned; `schemas/verdict-v0.1.json`, `schema_version` const `"0.1"`) or the SARIF export (`verdict.ToSARIF`).
 - **Storage:** config in `~/.config/assay/config.toml` (XDG-aware; API key is NOT here — OS keychain only); data in `~/.assay/` (scans, content-addressed `cache/`, `fleet/`). All dirs `0750`, files `0600`. Path/atomic-write helpers centralized in `internal/store/`.

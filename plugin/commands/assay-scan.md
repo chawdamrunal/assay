@@ -29,7 +29,7 @@ Where `<target>` is:
 The `assay` binary must be on PATH and the `.mcp.json` in this plugin's directory must be discovered by Claude Code. Install via:
 
 ```bash
-curl -sSL https://github.com/chawdamrunal/assay/install | sh
+curl -sSL https://raw.githubusercontent.com/chawdamrunal/assay/main/install.sh | sh
 ```
 
 ## Output

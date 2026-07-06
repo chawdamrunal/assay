@@ -250,10 +250,9 @@ This is the 2026 edition. The threats above are based on the current shape of Cl
 
 ## References
 
-- The Assay design specification: [`docs/superpowers/specs/2026-05-14-assay-design.md`](superpowers/specs/2026-05-14-assay-design.md)
 - The verdict schema: [`schemas/verdict-v0.1.json`](../schemas/verdict-v0.1.json)
 - Implementation: [`internal/scanner/`](../internal/scanner/) and [`internal/prompts/v1/threat_model.md`](../internal/prompts/v1/threat_model.md) — the actual prompt Assay uses to instruct Sonnet to build a threat model.
 
 ---
 
-*Published under [Apache-2.0](../LICENSE) — adapt and cite freely. Assay is open source at github.com/chawdamrunal/assay (placeholder).*
+*Published under [Apache-2.0](../LICENSE) — adapt and cite freely. Assay is open source at github.com/chawdamrunal/assay.*

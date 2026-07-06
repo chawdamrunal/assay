@@ -97,7 +97,7 @@ Separating claims from reality is the architectural foundation of the claims-vs-
 
 **This stage is the IP.** Input: claims, declared capabilities, triage map. The agent has *not yet read the implementation source*. Its job: given what this plugin claims to do, what is the attack surface? If compromised or malicious, what could it do? What questions must a reviewer answer?
 
-Output: a STRIDE-flavored threat model tailored to this specific artifact, ordered by risk, mapping to the ten threat classes from [`docs/threat-model-2026.md`](docs/threat-model-2026.md):
+Output: a STRIDE-flavored threat model tailored to this specific artifact, ordered by risk, mapping to the twelve threat classes from [`docs/threat-model-2026.md`](docs/threat-model-2026.md):
 
 1. Prompt injection via tool descriptions / responses
 2. Capability vs. claim mismatch
@@ -386,9 +386,7 @@ The discipline: nothing creeps from a later ring into the current one without an
 
 ## Further reading
 
-- The full design spec — [`docs/superpowers/specs/2026-05-14-assay-design.md`](docs/superpowers/specs/2026-05-14-assay-design.md)
 - The threat taxonomy — [`docs/threat-model-2026.md`](docs/threat-model-2026.md) *(launch artifact)*
-- Per-component implementation plans — [`docs/superpowers/plans/`](docs/superpowers/plans/)
 - Public schemas — [`schemas/verdict-v0.1.json`](schemas/verdict-v0.1.json), [`schemas/policy-v0.1.json`](schemas/policy-v0.1.json)
 
 If you're filing a security issue against Assay itself, please follow the responsible-disclosure note in [SECURITY.md](SECURITY.md) rather than opening a public GitHub issue.

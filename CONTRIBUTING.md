@@ -30,7 +30,7 @@ A PR that adds behavior without a test will be sent back.
 
 ### Verbatim-quote rule
 
-Every finding Assay produces must cite a `file:line` location plus a verbatim quoted snippet of the offending source. This is enforced at runtime by the post-validator (`internal/validator`) and again in code review. If your change touches the finding pipeline, make sure quoted evidence still survives end-to-end.
+Every finding Assay produces must cite a `file:line` location plus a verbatim quoted snippet of the offending source. This is enforced at runtime by the post-validator (`internal/verdict`) and again in code review. If your change touches the finding pipeline, make sure quoted evidence still survives end-to-end.
 
 Confabulated findings — anything where the LLM "remembers" code that isn't actually in the artifact — are the single worst failure mode for this tool. We treat regressions here as P0.
 
@@ -56,7 +56,7 @@ We use a spec-first workflow:
 2. **Plan** — a numbered task breakdown.
 3. **Tasks** — each task lands as a TDD-driven commit (test first, then code).
 
-Examples live in `docs/superpowers/`. For small bugfixes you can skip the spec, but anything touching the scan pipeline, the prompt set, or the agent loop should have one.
+For small bugfixes you can skip the spec, but anything touching the scan pipeline, the prompt set, or the agent loop should have one.
 
 PR descriptions should include:
 

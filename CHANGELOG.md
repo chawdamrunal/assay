@@ -119,8 +119,8 @@ Initial public release. The first security scanner for the AI dev stack — Sonn
 
 #### Documentation
 - README, ARCHITECTURE, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT
-- `docs/threat-model-2026.md` — the launch document; defensive taxonomy of 10 threat classes in the Claude Code + MCP ecosystem
-- Full design spec and implementation plans preserved under `docs/superpowers/`
+- `docs/threat-model-2026.md` — the launch document; defensive taxonomy of 12 threat classes in the Claude Code + MCP ecosystem
+- Design overview in [ARCHITECTURE.md](ARCHITECTURE.md)
 
 #### Testing
 - Default suite: free, FakeClient-based, runs on every PR
@@ -129,7 +129,7 @@ Initial public release. The first security scanner for the AI dev stack — Sonn
 
 ### Known limitations
 
-These are deferred to future releases (per the [design spec](docs/superpowers/specs/2026-05-14-assay-design.md) ring strategy):
+These are deferred to future releases (see [ARCHITECTURE.md](ARCHITECTURE.md)):
 
 - No dynamic execution sandbox — Assay is a static analyzer (Ring 2)
 - No adversarial prompt-injection probing (Ring 2)

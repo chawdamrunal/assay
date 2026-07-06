@@ -1,5 +1,7 @@
 # Installing Assay
 
+> 📄 The **[online install guide](https://chawdamrunal.github.io/assay/installation.html)** is the canonical, always-current version. This file mirrors it for offline / in-repo reading.
+
 Assay ships as **one self-contained binary**. The Go executable has the entire React web UI embedded inside it (via Go's `embed.FS`), so there is nothing to deploy alongside it — no Node.js at runtime, no separate web server, no database. The single `bin/assay` file *is* the CLI, the local web server, and the MCP server; you pick which role it plays with a subcommand (`assay serve`, `assay mcp`, `assay scan`, …).
 
 There are two ways to install it:
@@ -181,25 +183,25 @@ These are configured (`install.sh`, `install.ps1`, `.goreleaser.yaml` with `brew
 ### 5.1 Install script (macOS / Linux / WSL)
 
 ```bash
-curl -sSL https://github.com/chawdamrunal/assay/install | sh
+curl -sSL https://raw.githubusercontent.com/chawdamrunal/assay/main/install.sh | sh
 ```
 
 It detects your OS/arch, downloads the matching `assay_<version>_<os>_<arch>.tar.gz` from the GitHub Release, **verifies the SHA-256 checksum**, and installs to `/usr/local/bin` (or `~/.local/bin` if that isn't writable). Override with environment variables:
 
 ```bash
-ASSAY_VERSION=v0.1.0 ASSAY_INSTALL_DIR=/opt/bin curl -sSL https://github.com/chawdamrunal/assay/install | sh
+ASSAY_VERSION=v0.1.0 ASSAY_INSTALL_DIR=/opt/bin curl -sSL https://raw.githubusercontent.com/chawdamrunal/assay/main/install.sh | sh
 ```
 
 ### 5.2 Install script (Windows / PowerShell)
 
 ```powershell
-irm https://github.com/chawdamrunal/assay/install.ps1 | iex
+irm https://raw.githubusercontent.com/chawdamrunal/assay/main/install.ps1 | iex
 ```
 
 It detects your architecture, downloads `assay_<version>_windows_amd64.zip` from the GitHub Release, **verifies the SHA-256 checksum**, extracts `assay.exe` to `%LOCALAPPDATA%\Assay\bin`, and adds that directory to your **user `PATH`** — no administrator rights required (restart your terminal afterwards). Override with environment variables:
 
 ```powershell
-$env:ASSAY_VERSION = 'v0.1.0'; $env:ASSAY_INSTALL_DIR = 'C:\tools\assay'; irm https://github.com/chawdamrunal/assay/install.ps1 | iex
+$env:ASSAY_VERSION = 'v0.1.0'; $env:ASSAY_INSTALL_DIR = 'C:\tools\assay'; irm https://raw.githubusercontent.com/chawdamrunal/assay/main/install.ps1 | iex
 ```
 
 Windows arm64 installs the amd64 build (it runs under emulation); 32-bit x86 is not supported.
@@ -207,7 +209,7 @@ Windows arm64 installs the amd64 build (it runs under emulation); 32-bit x86 is 
 ### 5.3 WinGet
 
 ```powershell
-winget install AssaySec.Assay
+winget install chawdamrunal.Assay
 ```
 
 The release pipeline opens a manifest PR to [microsoft/winget-pkgs](https://github.com/microsoft/winget-pkgs) (`.goreleaser.yaml` → `winget:`). `winget install` works once that PR is merged for the release — which requires the GitHub Release to be **published** (not a draft) so Microsoft's validation can download the installer.

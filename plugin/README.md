@@ -17,7 +17,7 @@ When you mention installing a new plugin or MCP server, the `assay` skill activa
 The plugin shells out to the `assay` binary. Install it first:
 
 ```bash
-curl -sSL https://github.com/chawdamrunal/assay/install | sh
+curl -sSL https://raw.githubusercontent.com/chawdamrunal/assay/main/install.sh | sh
 # or:
 brew install chawdamrunal/tap/assay
 ```

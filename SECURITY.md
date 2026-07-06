@@ -4,7 +4,7 @@ This document covers vulnerabilities **in Assay itself**. Vulnerabilities Assay 
 
 ## Reporting a vulnerability
 
-Email **security@github.com/chawdamrunal/assay** (placeholder until the project domain is finalized).
+Report a vulnerability privately through the repository's **Security → Report a vulnerability** tab on GitHub (GitHub Security Advisories). Please don't open a public issue for a security report.
 
 Please do not open a public GitHub issue for security bugs. Include:
 
@@ -38,9 +38,9 @@ While we're in `0.x`, only the **latest minor release** receives security fixes.
 Assay is designed to run on an analyst's machine against untrusted artifacts. The following defenses are in place:
 
 - **File permissions** — output directories are created with `0750`, files with `0600`. Reports may contain sensitive findings; we don't want them world-readable.
-- **API keys** — the Anthropic API key is read from the OS keychain by default (`security` on macOS, `secret-tool` on Linux). Environment-variable fallback exists but logs a warning.
+- **API keys** — default MCP mode uses **no API key**: it reaches the model by spawning `claude -p`, which authenticates through your existing Claude Code login. Only `--scan-mode legacy` uses an Anthropic API key, read from the OS keychain (`security` on macOS, `secret-tool` on Linux); an environment-variable fallback exists but logs a warning.
 - **Bounded tools** — every agent-callable tool refuses paths outside the scan root. Symlinks pointing out of the root are rejected.
-- **Network egress allowlist** — Assay only talks to `api.anthropic.com` (LLM) and `api.osv.dev` (vulnerability database). All other outbound traffic is blocked at the HTTP-client layer.
+- **Network egress** — Assay's own outbound traffic is limited to `api.osv.dev` (vulnerability database), plus `api.anthropic.com` only in `--scan-mode legacy`. In default MCP mode the model call is made by the `claude -p` subprocess, whose egress goes through Claude Code — not a direct Assay connection.
 - **`--offline` flag** — disables OSV lookups entirely. Useful for air-gapped environments and for scanning artifacts you'd rather not advertise to a third party.
 
 ## Threat model of Assay itself

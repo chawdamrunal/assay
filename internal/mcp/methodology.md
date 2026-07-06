@@ -115,7 +115,7 @@ For each node + edge in the data-flow diagram, ask: given this declared shape, w
 
 Each Tn section MUST include:
 
-* **Class:** one of the 10 threat classes above
+* **Class:** one of the 12 threat classes above
 * **Targets node:** the data-flow node(s) this threat applies to
 * **Severity if exploited:** critical / high / medium / low
 * **Description:** 2-4 sentences specific to this artifact, not generic

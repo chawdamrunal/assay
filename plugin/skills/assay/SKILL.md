@@ -34,7 +34,7 @@ When the user is about to install a Claude Code plugin or MCP server — or when
 
 ## Reference
 
-The 10 threat classes Assay hunts for are documented at:
+The 12 threat classes Assay hunts for are documented at:
 `<repo-root>/docs/threat-model-2026.md`
 
 If the user wants to understand what Assay IS scanning for, point them there.
