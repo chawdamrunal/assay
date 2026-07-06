@@ -4,23 +4,27 @@
       <stop offset="0" stop-color="#FCFCFE"/>
       <stop offset="1" stop-color="#EFEFFA"/>
     </linearGradient>
-    <linearGradient id="tile" x1="0" y1="0" x2="150" y2="150" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#736BF3"/>
-      <stop offset="1" stop-color="#4A3ED4"/>
+    <linearGradient id="mk" x1="60" y1="50" x2="200" y2="215" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6E63F2"/>
+      <stop offset="1" stop-color="#4133CC"/>
     </linearGradient>
-    <filter id="s" x="-40%" y="-40%" width="180%" height="180%">
+    <filter id="sh" x="-40%" y="-40%" width="180%" height="180%">
       <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#4A3ED4" flood-opacity="0.20"/>
     </filter>
   </defs>
   <rect x="1" y="1" width="1278" height="298" rx="26" fill="url(#bg)" stroke="#E6E7EF"/>
-  <g transform="translate(84,77)">
-    <rect width="146" height="146" rx="36" fill="url(#tile)" filter="url(#s)"/>
-    <path d="M73 33 L110 48 V80 C110 103 93 118 73 125 C53 118 36 103 36 80 V48 Z" fill="#FFFFFF" opacity="0.15"/>
-    <path d="M56 79 l12 13 l25 -28" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- hallmark punch: struck shield cartouche + serif date-letter + gold assay glint -->
+  <g transform="translate(50,40) scale(0.89)">
+    <path d="M66 42 H174 a12 12 0 0 1 12 12 V118 C186 165 155 193 120 206 C85 193 54 165 54 118 V54 a12 12 0 0 1 12 -12 Z" fill="url(#mk)" filter="url(#sh)"/>
+    <path d="M66 42 H174 a12 12 0 0 1 12 12 V118 C186 165 155 193 120 206 C85 193 54 165 54 118 V54 a12 12 0 0 1 12 -12 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.20" stroke-width="3"/>
+    <text x="120" y="160" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="128" font-weight="700" fill="#FFFFFF">A</text>
+    <path d="M168 56 l4.5 11 l11 4.5 l-11 4.5 l-4.5 11 l-4.5 -11 l-11 -4.5 l11 -4.5 Z" fill="#EAB94A"/>
   </g>
-  <text x="286" y="138" font-family="system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="92" font-weight="800" fill="#1E2029" letter-spacing="-3">Assay</text>
-  <text x="290" y="184" font-family="system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="27" font-weight="500" fill="#5A6070">Security scanner for the AI dev stack</text>
-  <g transform="translate(290,210)">
+
+  <text x="288" y="138" font-family="system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="92" font-weight="800" fill="#1E2029" letter-spacing="-3">Assay</text>
+  <text x="292" y="184" font-family="system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="27" font-weight="500" fill="#5A6070">Security scanner for the AI dev stack</text>
+  <g transform="translate(292,210)">
     <rect width="404" height="44" rx="11" fill="#FFFFFF" stroke="#E2E3EC"/>
     <text x="20" y="29" font-family="ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-size="18" font-weight="700" fill="#4A3ED4">$</text>
     <text x="40" y="29" font-family="ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-size="18" fill="#3A3E4A">assay scan .</text>

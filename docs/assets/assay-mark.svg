@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="Assay mark">
+  <defs>
+    <linearGradient id="mk" x1="54" y1="42" x2="186" y2="206" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6E63F2"/><stop offset="1" stop-color="#4133CC"/>
+    </linearGradient>
+  </defs>
+  <path d="M66 42 H174 a12 12 0 0 1 12 12 V118 C186 165 155 193 120 206 C85 193 54 165 54 118 V54 a12 12 0 0 1 12 -12 Z" fill="url(#mk)"/>
+  <path d="M66 42 H174 a12 12 0 0 1 12 12 V118 C186 165 155 193 120 206 C85 193 54 165 54 118 V54 a12 12 0 0 1 12 -12 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.20" stroke-width="3"/>
+  <text x="120" y="160" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="128" font-weight="700" fill="#FFFFFF">A</text>
+  <path d="M168 56 l4.5 11 l11 4.5 l-11 4.5 l-4.5 11 l-4.5 -11 l-11 -4.5 l11 -4.5 Z" fill="#EAB94A"/>
+</svg>

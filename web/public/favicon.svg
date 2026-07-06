@@ -1,5 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <path d="M32 4 56 14V32C56 46 44 56 32 60C20 56 8 46 8 32V14L32 4Z"
-        fill="#0ea5e9" stroke="#082f49" stroke-width="2"/>
-  <path d="M22 32L29 39L42 26" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="34 34 172 172" width="32" height="32" role="img" aria-label="Assay">
+  <defs>
+    <linearGradient id="mk" x1="54" y1="42" x2="186" y2="206" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6E63F2"/><stop offset="1" stop-color="#4133CC"/>
+    </linearGradient>
+  </defs>
+  <path d="M66 42 H174 a12 12 0 0 1 12 12 V118 C186 165 155 193 120 206 C85 193 54 165 54 118 V54 a12 12 0 0 1 12 -12 Z" fill="url(#mk)"/>
+  <text x="120" y="162" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="132" font-weight="700" fill="#FFFFFF">A</text>
+  <path d="M168 56 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 Z" fill="#EAB94A"/>
 </svg>
