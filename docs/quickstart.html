@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quickstart — Assay</title>
+<meta name="description" content="Quickstart for Assay: inventory your Claude Code stack, scan a plugin or MCP server from the web UI or CLI, gate installs with a pre-install hook, and scan private GitHub repos.">
+<link rel="canonical" href="https://chawdamrunal.github.io/assay/quickstart.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Assay quickstart">
+<meta property="og:description" content="Inventory, scan from the web UI or CLI, gate installs, and scan GitHub repos.">
+<meta property="og:image" content="https://chawdamrunal.github.io/assay/assets/assay-banner.svg">
+<link rel="icon" type="image/svg+xml" href="assets/assay-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="brand" href="index.html"><img src="assets/assay-mark.svg" alt=""> Assay</a>
+  <div class="nav-links">
+    <a href="index.html">Docs</a>
+    <a href="installation.html">Install</a>
+    <a href="quickstart.html" class="active">Quickstart</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="faq.html">FAQ</a>
+    <a href="https://github.com/chawdamrunal/assay">GitHub &#8599;</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+  <div class="eyebrow">Quickstart</div>
+  <h1>Scan your first artifact</h1>
+  <p class="lede">Point Assay at a plugin, an MCP server, a local directory, or a GitHub repo. The web UI drives scans through your Claude Code subscription; the CLI can also run a deterministic, no-key pre-pass.</p>
+
+  <h2>Common commands</h2>
+  <pre><code># Inventory what's installed in ~/.claude
+assay inventory
+
+# Web UI (default mode: scans run via your Claude Code subscription)
+assay serve
+# open http://localhost:7373 → click "New Scan" → pick a target
+
+# Scan every installed plugin in parallel (fleet mode)
+assay scan-all --parallel 2
+
+# In Claude Code itself
+/assay-scan ~/.claude/plugins/my-plugin
+
+# Standalone CLI (legacy mode — direct Anthropic API call, needs a key)
+assay scan ~/.claude/plugins/my-plugin
+
+# Fast deterministic pre-pass only (no LLM call, &lt;2s)
+assay scan --quick --json ~/.claude/plugins/cache/&lt;m&gt;/&lt;plugin&gt;/&lt;version&gt;</code></pre>
+
+  <h2>Gate installs with the pre-install hook</h2>
+  <p>Intercept <code>/plugin install</code> in Claude Code so nothing lands unscanned:</p>
+  <pre><code>assay hook install</code></pre>
+  <p>Every install then runs <code>assay scan --quick</code> and returns a decision before it commits — <strong>deny</strong> on critical/high, <strong>ask</strong> on medium, <strong>allow</strong> (with a deep scan in the background) on low. It's the 30-second risk briefing at the exact moment you're about to trust something.</p>
+
+  <h2>Scan a GitHub repo</h2>
+  <p>Ask in the chat (<em>"is github.com/acme/plugin safe?"</em>) or paste a URL into the New Scan box — Assay clones to a quarantined cache and scans the checkout. Public repos need nothing. For a <strong>private</strong> repo it resolves a token in priority order, each time a clone needs auth:</p>
+  <ol>
+    <li>A token saved in <strong>Settings → GitHub access</strong> (stored in the OS keychain)</li>
+    <li><code>GITHUB_TOKEN</code> / <code>GH_TOKEN</code> environment variable</li>
+    <li><code>gh auth token</code> — the GitHub CLI, when you're logged in</li>
+  </ol>
+  <div class="note">The clone tries <b>anonymously first</b> and only attaches a token on an auth failure — scoped to <code>github.com</code> and injected via git's env-config, so it never lands in the process list, the clone URL, or <code>.git/config</code>. A fine-grained, read-only <em>Contents</em> token is recommended. Both <code>https://github.com/owner/repo</code> and the clone-style <code>…/repo.git</code> URL work.</div>
+
+  <h2>What it answers that <code>git clone</code> can't</h2>
+  <ul>
+    <li><strong>What's the security state of all my installed plugins?</strong> → <code>assay scan-all</code> aggregates verdicts and surfaces newly-unsafe plugins across the fleet.</li>
+    <li><strong>What changed vs. last week?</strong> → diff mode annotates new / changed / resolved findings against a prior baseline.</li>
+    <li><strong>Should I trust this before I click install?</strong> → the pre-install hook's deny / ask / allow decision.</li>
+  </ul>
+
+  <div class="pager"><a href="installation.html">&#8592; Installation</a><a href="how-it-works.html">How it works &#8594;</a></div>
+</div>
+
+<footer class="foot">Assay — security scanner for the AI dev stack · <a href="https://github.com/chawdamrunal/assay">github.com/chawdamrunal/assay</a> · Apache-2.0</footer>
+</body>
+</html>

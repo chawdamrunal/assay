@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ — Assay</title>
+<meta name="description" content="Assay FAQ: how it differs from Snyk, Socket, and Cisco's MCP Scanner; whether it needs an Anthropic API key; what MCP tool poisoning is; scanning GitHub repos; and whether your source code leaves your machine.">
+<link rel="canonical" href="https://chawdamrunal.github.io/assay/faq.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Assay FAQ">
+<meta property="og:description" content="How it differs from Snyk/Cisco, API-key needs, MCP tool poisoning, source privacy.">
+<meta property="og:image" content="https://chawdamrunal.github.io/assay/assets/assay-banner.svg">
+<link rel="icon" type="image/svg+xml" href="assets/assay-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="brand" href="index.html"><img src="assets/assay-mark.svg" alt=""> Assay</a>
+  <div class="nav-links">
+    <a href="index.html">Docs</a>
+    <a href="installation.html">Install</a>
+    <a href="quickstart.html">Quickstart</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="faq.html" class="active">FAQ</a>
+    <a href="https://github.com/chawdamrunal/assay">GitHub &#8599;</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+  <div class="eyebrow">FAQ</div>
+  <h1>Frequently asked questions</h1>
+
+  <h2>How is Assay different from Snyk, Socket, or Cisco's MCP Scanner?</h2>
+  <p>Those focus on dependency CVEs or network-level guardrails. Assay reasons about the <em>artifact's behavior</em> with an LLM — it threat-models what a Claude Code plugin or MCP server can actually do, then reads the code for evidence, with every finding backed by a verbatim <code>file:line</code> quote (confabulations are re-read and dropped).</p>
+
+  <h2>Does it need an Anthropic API key?</h2>
+  <p>No. Default mode runs on your existing <strong>Claude Code subscription</strong> via <code>claude -p</code>. An API key is only needed for the <code>--scan-mode legacy</code> / CI fallback, or the deterministic <code>--no-llm</code> tier (which needs no key at all).</p>
+
+  <h2>What is "MCP tool poisoning"?</h2>
+  <p>An MCP server that passes review, then later mutates a tool description to smuggle malicious instructions to the agent. It's one of the AI-dev-stack threat classes Assay models — see <a href="how-it-works.html">How it works</a> and <a href="https://github.com/chawdamrunal/assay/blob/main/docs/threat-model-2026.md">the threat model</a>.</p>
+
+  <h2>Can it scan a GitHub repo I haven't installed?</h2>
+  <p>Yes — point it at <code>github.com/owner/repo</code> (or the clone-style <code>…/repo.git</code>). Public repos need nothing; private ones resolve a token from the OS keychain, <code>GITHUB_TOKEN</code>/<code>GH_TOKEN</code>, or <code>gh auth token</code>. See <a href="quickstart.html">Quickstart</a>.</p>
+
+  <h2>Does my source code leave my machine?</h2>
+  <p>Only the snippets Assay chooses to read are sent to the reasoning model (Claude Code, or the Anthropic API in legacy mode). Nothing else. Verdicts can be signed in the JSON output, the tool layer is sandboxed under a per-call <code>target</code> root, and any policy file is loaded from <em>your</em> side — never from inside the scanned artifact, so a malicious plugin can't suppress its own findings.</p>
+
+  <h2>What does it run on?</h2>
+  <p>A single self-contained Go binary with the React UI embedded — macOS, Linux, WSL, and Windows. It exposes three roles from one binary: the CLI, the <code>assay serve</code> web server, and the <code>assay mcp</code> MCP server that Claude Code drives.</p>
+
+  <div class="pager"><a href="how-it-works.html">&#8592; How it works</a><a href="index.html">Docs home &#8594;</a></div>
+</div>
+
+<footer class="foot">Assay — security scanner for the AI dev stack · <a href="https://github.com/chawdamrunal/assay">github.com/chawdamrunal/assay</a> · Apache-2.0</footer>
+</body>
+</html>

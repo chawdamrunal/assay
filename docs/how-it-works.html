@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How it works — Assay</title>
+<meta name="description" content="How Assay works: a citation-verified 5-stage methodology (triage, claim extraction, threat model, investigation, synthesis), two scan modes (MCP + legacy), and the AI-dev-stack threat classes it targets — prompt injection, credential exfiltration, MCP tool poisoning, hook abuse.">
+<link rel="canonical" href="https://chawdamrunal.github.io/assay/how-it-works.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How Assay works">
+<meta property="og:description" content="A citation-verified 5-stage methodology, two scan modes, and the threat classes it targets.">
+<meta property="og:image" content="https://chawdamrunal.github.io/assay/assets/assay-banner.svg">
+<link rel="icon" type="image/svg+xml" href="assets/assay-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="brand" href="index.html"><img src="assets/assay-mark.svg" alt=""> Assay</a>
+  <div class="nav-links">
+    <a href="index.html">Docs</a>
+    <a href="installation.html">Install</a>
+    <a href="quickstart.html">Quickstart</a>
+    <a href="how-it-works.html" class="active">How it works</a>
+    <a href="faq.html">FAQ</a>
+    <a href="https://github.com/chawdamrunal/assay">GitHub &#8599;</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+  <div class="eyebrow">How it works</div>
+  <h1>Threat model first, then read the code</h1>
+  <p class="lede">Assay's edge is ordering: it builds a threat model <em>before</em> it reads a line of source, so the investigation is hypothesis-driven instead of pattern-matching. Every finding is backed by a verbatim quote, and a post-validator drops anything the model can't prove.</p>
+
+  <h2>The 5-stage methodology</h2>
+  <ol>
+    <li><strong>Triage</strong> — map the artifact: entry points, declared permissions, files worth reading.</li>
+    <li><strong>Claim extraction</strong> — what does it <em>claim</em> to do?</li>
+    <li><strong>Threat model</strong> — given the claims, where could it go wrong? (done <em>before</em> reading source code)</li>
+    <li><strong>Investigation</strong> — read code, gather evidence for each threat, one sub-agent per threat.</li>
+    <li><strong>Synthesis</strong> — a <code>safe / caution / unsafe</code> verdict + <code>audit.md</code> with verbatim <code>file:line</code> citations.</li>
+  </ol>
+  <div class="note"><b>Cite or drop.</b> The post-validator physically re-reads every cited file after synthesis; if a quoted snippet isn't there, the evidence is dropped, and a finding with no surviving evidence is dropped entirely. Confabulated findings — the model "remembering" code that isn't in the artifact — are the failure mode this exists to kill.</div>
+
+  <h2>Two scan modes, one verdict format</h2>
+  <div class="diagram">
+    <img src="assets/architecture.svg" alt="Assay scan architecture — MCP mode spawns claude -p and calls assay_* tools; legacy mode runs the Go orchestrator with the Anthropic SDK; both converge through verdict validation to produce audit.json + audit.md.">
+  </div>
+  <ul>
+    <li><strong>MCP mode (default)</strong> — <code>assay serve</code> spawns <code>claude -p</code> with the Assay MCP server wired in. Your Claude Code session walks the methodology by calling <code>assay_*</code> tools (<code>list_files</code>, <code>read_file</code>, <code>grep</code>, <code>record_finding</code>, <code>finalize_scan</code>…). Uses your subscription; no rate-limit walls.</li>
+    <li><strong>Legacy in-process mode</strong> (<code>--scan-mode legacy</code>) — a Go orchestrator calls the Anthropic API directly with automatic 429 retry + backoff. For users without Claude Code, and for CI.</li>
+  </ul>
+  <p>Both produce the <strong>same <code>audit.json</code> + <code>audit.md</code></strong> on disk. <code>assay serve --scan-mode fake</code> replays recorded fixtures for demos and offline development — no LLM call.</p>
+
+  <h2>Threat coverage</h2>
+  <p>Assay reasons about threat classes specific to the AI dev stack, not generic CVEs. Highlights:</p>
+  <ul>
+    <li><strong>Prompt injection</strong> via tool descriptions and responses</li>
+    <li><strong>MCP tool poisoning</strong> — a server that passes review, then mutates a tool description to smuggle instructions to the agent</li>
+    <li><strong>Capability vs. claim mismatch</strong> — does the code do more than the README says?</li>
+    <li><strong>Credential exfiltration</strong> — reads of <code>~/.aws/credentials</code>, <code>~/.ssh/</code>, <code>.env</code></li>
+    <li><strong>Hook abuse</strong> — shell commands attached to every Claude Code event</li>
+    <li><strong>Supply-chain attacks</strong> via updates and dependencies</li>
+  </ul>
+  <p>The full catalog lives in <a href="https://github.com/chawdamrunal/assay/blob/main/docs/threat-model-2026.md">docs/threat-model-2026.md</a> and the design in <a href="https://github.com/chawdamrunal/assay/blob/main/ARCHITECTURE.md">ARCHITECTURE.md</a>.</p>
+
+  <h3>Out of scope in v0</h3>
+  <ul>
+    <li>Dynamic execution / sandboxing (Assay reads code; it doesn't run it)</li>
+    <li>Adversarial prompt-injection fuzzing</li>
+    <li>claude.ai connector scanning (closed-source — metadata review only)</li>
+    <li>Cross-client adapters (Cursor, Cline, Continue) beyond Claude Code</li>
+  </ul>
+
+  <div class="pager"><a href="quickstart.html">&#8592; Quickstart</a><a href="faq.html">FAQ &#8594;</a></div>
+</div>
+
+<footer class="foot">Assay — security scanner for the AI dev stack · <a href="https://github.com/chawdamrunal/assay">github.com/chawdamrunal/assay</a> · Apache-2.0</footer>
+</body>
+</html>

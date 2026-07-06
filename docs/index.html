@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assay — security scanner for the AI dev stack</title>
+<meta name="description" content="Assay is a security scanner for the AI dev stack. It reasons about Claude Code plugins, MCP servers, hooks, skills, and connectors with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning before you trust them.">
+<link rel="canonical" href="https://chawdamrunal.github.io/assay/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Assay — security scanner for the AI dev stack">
+<meta property="og:description" content="Reasons about Claude Code plugins, MCP servers, skills & connectors with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning.">
+<meta property="og:image" content="https://chawdamrunal.github.io/assay/assets/assay-banner.svg">
+<link rel="icon" type="image/svg+xml" href="assets/assay-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="brand" href="index.html"><img src="assets/assay-mark.svg" alt=""> Assay</a>
+  <div class="nav-links">
+    <a href="index.html" class="active">Docs</a>
+    <a href="installation.html">Install</a>
+    <a href="quickstart.html">Quickstart</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="faq.html">FAQ</a>
+    <a href="https://github.com/chawdamrunal/assay">GitHub &#8599;</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <img class="logo" src="assets/assay-mark.svg" alt="Assay hallmark logo">
+    <div class="eyebrow">Documentation</div>
+    <h1>Security scanner for the AI dev stack</h1>
+    <p class="lede">Assay reasons about an artifact with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning in Claude Code plugins, MCP servers, hooks, skills &amp; connectors. It runs on your Claude Code subscription, so there's no separate API key.</p>
+    <div class="badges">
+      <img src="https://img.shields.io/badge/license-Apache--2.0-4A3ED4" alt="License: Apache-2.0">
+      <img src="https://img.shields.io/badge/Go-1.25%2B-00ADD8?logo=go&logoColor=white" alt="Go 1.25+">
+      <img src="https://img.shields.io/badge/MCP-server-4A3ED4" alt="MCP server">
+    </div>
+  </div>
+
+  <h2>What Assay does</h2>
+  <p>Before you install a plugin or wire up an MCP server, Assay threat-models what it <em>could</em> do, then reads the code for evidence — every finding backed by a verbatim <code>file:line</code> quote. It gives a <strong>safe / caution / unsafe</strong> verdict you can trust, because a post-validator re-reads each citation and drops anything the model can't back with real code.</p>
+
+  <div class="cards">
+    <a class="card" href="installation.html">
+      <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+      <h3>Installation</h3>
+      <p>Build from source today, or the prebuilt curl / Homebrew / WinGet / Docker channels.</p>
+    </a>
+    <a class="card" href="quickstart.html">
+      <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <h3>Quickstart</h3>
+      <p>Inventory your stack, run a scan from the web UI or CLI, and gate installs.</p>
+    </a>
+    <a class="card" href="how-it-works.html">
+      <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/></svg></div>
+      <h3>How it works</h3>
+      <p>The 5-stage methodology, the two scan modes, and the threat classes it targets.</p>
+    </a>
+    <a class="card" href="faq.html">
+      <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <h3>FAQ</h3>
+      <p>How it differs from Snyk / Cisco, whether it needs an API key, tool poisoning, and more.</p>
+    </a>
+  </div>
+
+  <h2>60-second start</h2>
+  <pre><code># build the single binary (React UI embedded)
+git clone https://github.com/chawdamrunal/assay.git &amp;&amp; cd assay
+make build &amp;&amp; make install
+
+# see what's installed in ~/.claude, then scan from the web UI
+assay inventory
+assay serve            # http://localhost:7373 → "New Scan"</code></pre>
+  <p>Full details in <a href="installation.html">Installation</a> and <a href="quickstart.html">Quickstart</a>.</p>
+
+  <div class="note"><b>Runs on your Claude Code subscription.</b> The default scan path drives the reasoning through your existing Claude Code login via <code>claude -p</code> — no separate Anthropic API key, and no rate-limit walls. An API key is only needed for the <code>--scan-mode legacy</code> / CI fallback.</div>
+</div>
+
+<footer class="foot">Assay — security scanner for the AI dev stack · <a href="https://github.com/chawdamrunal/assay">github.com/chawdamrunal/assay</a> · Apache-2.0</footer>
+</body>
+</html>

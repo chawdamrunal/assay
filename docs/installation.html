@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installation — Assay</title>
+<meta name="description" content="Install Assay, the AI dev-stack security scanner: build the single Go binary from source, or use the prebuilt curl, Homebrew, WinGet, or Docker channels.">
+<link rel="canonical" href="https://chawdamrunal.github.io/assay/installation.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Installing Assay">
+<meta property="og:description" content="Build from source, or curl / Homebrew / WinGet / Docker.">
+<meta property="og:image" content="https://chawdamrunal.github.io/assay/assets/assay-banner.svg">
+<link rel="icon" type="image/svg+xml" href="assets/assay-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="brand" href="index.html"><img src="assets/assay-mark.svg" alt=""> Assay</a>
+  <div class="nav-links">
+    <a href="index.html">Docs</a>
+    <a href="installation.html" class="active">Install</a>
+    <a href="quickstart.html">Quickstart</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="faq.html">FAQ</a>
+    <a href="https://github.com/chawdamrunal/assay">GitHub &#8599;</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+  <div class="eyebrow">Installation</div>
+  <h1>Install Assay</h1>
+  <p class="lede">Assay is one self-contained binary — the React UI is embedded into the Go executable, so there's nothing to deploy separately.</p>
+
+  <h2>Build from source <span class="tag">works today</span></h2>
+  <p>Requires Go 1.25.5+, Node 22+, and pnpm 10 (<code>corepack enable</code>):</p>
+  <pre><code>git clone https://github.com/chawdamrunal/assay.git
+cd assay
+make build              # builds the SPA, embeds it, compiles bin/assay
+make install            # copies it to ~/.local/bin (override: PREFIX=/usr/local)
+assay version</code></pre>
+  <div class="note">For default-mode scans you also need the Claude Code CLI (<code>claude</code>) on your <code>PATH</code>. That's what does the reasoning on your subscription.</div>
+
+  <h2>Prebuilt release channels</h2>
+  <p>These are wired via <code>install.sh</code>, <code>install.ps1</code>, and <code>.goreleaser.yaml</code> and go live once the first <code>v*.*.*</code> release is published:</p>
+  <pre><code># macOS / Linux / WSL  (checksum-verified)
+curl -fsSL https://raw.githubusercontent.com/chawdamrunal/assay/main/install.sh | sh
+
+# Windows PowerShell  (checksum-verified)
+irm https://raw.githubusercontent.com/chawdamrunal/assay/main/install.ps1 | iex
+
+# Windows (WinGet)
+winget install chawdamrunal.Assay
+
+# Homebrew
+brew install chawdamrunal/tap/assay
+
+# Docker
+docker run --rm -v ~/.claude:/scan ghcr.io/chawdamrunal/assay:latest scan /scan
+
+# inside Claude Code
+/plugin install chawdamrunal/assay</code></pre>
+  <p>Until the first release is tagged, build from source above — or build the Docker image locally with <code>docker build -t assay:local .</code></p>
+
+  <h2>Authentication</h2>
+  <p>For <strong>MCP-mode</strong> scans (the default), your Claude Code login is used — no separate auth. For the <code>--scan-mode legacy</code> path, Assay resolves credentials in priority order:</p>
+  <ol>
+    <li><code>ANTHROPIC_API_KEY</code> environment variable</li>
+    <li><code>assay config set api-key sk-ant-...</code> (stored in the OS keychain)</li>
+    <li>Your existing Claude Code OAuth credentials (auto-detected), with built-in 429 retry + backoff</li>
+  </ol>
+  <p>Run <code>assay auth status</code> to see which method is active. Config lives in <code>~/.config/assay/</code>; data in <code>~/.assay/</code> (both <code>0750</code>, files <code>0600</code>; the API key is keychain-only).</p>
+
+  <div class="pager"><a href="index.html">&#8592; Docs home</a><a href="quickstart.html">Quickstart &#8594;</a></div>
+</div>
+
+<footer class="foot">Assay — security scanner for the AI dev stack · <a href="https://github.com/chawdamrunal/assay">github.com/chawdamrunal/assay</a> · Apache-2.0</footer>
+</body>
+</html>
