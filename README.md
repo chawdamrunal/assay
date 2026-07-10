@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/assay-banner.svg" alt="Assay — security scanner for the AI dev stack" width="820">
+  <img src="docs/assets/assay-banner.svg" alt="Assay — MCP and Claude Code security scanner" width="820">
 </p>
 
 <p align="center">
@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <b>Reasons about an artifact with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning in Claude Code plugins, MCP servers, hooks, skills &amp; connectors.</b><br>
+  <b>Assay is an MCP &amp; Claude Code security scanner.</b> It threat-models plugins, MCP servers, hooks, skills &amp; connectors with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning <em>before you trust them</em>.<br>
   Runs on your <b>Claude Code subscription</b> — no separate API key required.
 </p>
 
@@ -23,9 +23,7 @@
   &nbsp;·&nbsp; <a href="https://chawdamrunal.github.io/assay/faq.html">FAQ</a>
 </p>
 
-<!-- ▶ DEMO — replace this block with your recording (a linked thumbnail, a GIF, or a <video> tag). -->
-<p align="center"><em>▶ Demo video </em></p>
-
+<p align="center"><b>▶ Demo</b> — inventory your Claude Code stack, then threat-model and scan an MCP server end to end.</p>
 
 https://github.com/user-attachments/assets/8e6e1c3f-358a-4cf1-a50c-6e15fbf43c75
 
@@ -35,7 +33,7 @@ https://github.com/user-attachments/assets/8e6e1c3f-358a-4cf1-a50c-6e15fbf43c75
 
 ## What it does
 
-Before you install a plugin or wire up an MCP server, Assay threat-models what it *could* do, then reads the code for evidence — every finding backed by a verbatim `file:line` quote.
+Before you install a plugin or wire up an MCP server, Assay threat-models what it *could* do, then reads the code for evidence — every finding backed by a verbatim `file:line` quote. It's built for **MCP security** and the wider Claude Code attack surface, where the dangerous behavior is usually legal code with bad intent that SAST and dependency scanners miss.
 
 - **Reasons, doesn't pattern-match** — an LLM builds a threat model *before* it reads source, so the review is hypothesis-driven, not regex.
 - **Catches AI-native threats** — prompt injection, MCP tool poisoning, credential exfiltration, hook abuse, capability-vs-claim mismatch.
@@ -64,6 +62,9 @@ The full docs live at **[chawdamrunal.github.io/assay](https://chawdamrunal.gith
 * **[Installation](https://chawdamrunal.github.io/assay/installation.html)** — build from source, curl / Homebrew / WinGet / Docker, auth
 * **[Quickstart](https://chawdamrunal.github.io/assay/quickstart.html)** — scan from the web UI or CLI, the pre-install gate, private GitHub repos
 * **[How it works](https://chawdamrunal.github.io/assay/how-it-works.html)** — the 5-stage methodology, both scan modes, threat coverage
+* **[How to threat-model an MCP server](https://chawdamrunal.github.io/assay/mcp-server-security.html)** — the practical MCP security checklist
+* **[MCP tool poisoning](https://chawdamrunal.github.io/assay/mcp-tool-poisoning.html)** — what it is and how to detect it
+* **[Threat model](https://chawdamrunal.github.io/assay/threat-model.html)** — the 12 AI dev-stack threat classes
 * **[FAQ](https://chawdamrunal.github.io/assay/faq.html)** — vs. Snyk / Cisco, API-key needs, tool poisoning, source privacy
 
 Deeper references in-repo: [ARCHITECTURE.md](ARCHITECTURE.md) · [threat model](docs/threat-model-2026.md) · [CHANGELOG.md](CHANGELOG.md).
