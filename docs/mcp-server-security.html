@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to threat-model an MCP server — a practical security checklist | Assay</title>
+<meta name="description" content="A practical MCP server security checklist: how to threat-model a Model Context Protocol server before you trust it — prompt injection via tool descriptions and responses, cross-tool exfiltration, confused-deputy shell-outs, remote transports, and capability-vs-claim mismatch.">
+<link rel="canonical" href="https://chawdamrunal.github.io/assay/mcp-server-security.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to threat-model an MCP server — a practical security checklist">
+<meta property="og:description" content="Seven questions to ask before you trust a Model Context Protocol server: injection through tool descriptions and responses, reader+sender exfiltration chains, confused-deputy shell-outs, remote transports, and capability-vs-claim gaps.">
+<meta property="og:image" content="https://chawdamrunal.github.io/assay/assets/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://chawdamrunal.github.io/assay/assets/social-card.png">
+<link rel="icon" type="image/svg+xml" href="assets/assay-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/docs.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to threat-model an MCP server",
+  "description": "A practical checklist for MCP server security: seven questions to threat-model a Model Context Protocol server before you trust it.",
+  "url": "https://chawdamrunal.github.io/assay/mcp-server-security.html",
+  "keywords": "MCP server security, MCP threat modeling, MCP security, Model Context Protocol security, prompt injection, MCP tool poisoning",
+  "author": { "@type": "Person", "name": "Mrunal Chawda" },
+  "step": [
+    { "@type": "HowToStep", "name": "Ask what every response becomes", "text": "Every string an MCP server returns is read by the agent in its instruction context. Treat responses as untrusted input that can re-enter the model as commands." },
+    { "@type": "HowToStep", "name": "Read the tool description as a prompt", "text": "The tool description registered at handshake is read by the model. Flag imperative language aimed at the model and mentions of other tools." },
+    { "@type": "HowToStep", "name": "Check for reader-plus-sender bundles", "text": "A tool that reads sensitive data plus a tool that makes outbound requests can be chained by the agent into an exfiltration path." },
+    { "@type": "HowToStep", "name": "Trace every shell-out", "text": "Tools that build shell commands from inputs are confused-deputy risks; the user approved the wrapper, not the inner command." },
+    { "@type": "HowToStep", "name": "Treat remote transports as untrusted at runtime", "text": "A server reachable over a remote transport can change its responses after review; every response is a live injection source." },
+    { "@type": "HowToStep", "name": "Diff capability against claim", "text": "Compare what the README and manifest advertise against what the code actually does; the gap is the vulnerability." },
+    { "@type": "HowToStep", "name": "Pin and re-scan on update", "text": "A clean review of one version says nothing about the next. Pin dependencies and re-scan on every update." }
+  ]
+}
+</script>
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="brand" href="index.html"><img src="assets/assay-mark.svg" alt=""> Assay</a>
+  <div class="nav-links">
+    <a href="index.html">Docs</a>
+    <a href="installation.html">Install</a>
+    <a href="quickstart.html">Quickstart</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="threat-model.html">Threats</a>
+    <a href="faq.html">FAQ</a>
+    <a href="https://github.com/chawdamrunal/assay">GitHub &#8599;</a>
+  </div>
+</div></nav>
+
+<div class="wrap">
+  <div class="eyebrow">Guide · MCP security</div>
+  <h1>How to threat-model an MCP server</h1>
+  <p class="lede">A Model Context Protocol (MCP) server speaks to your agent in the same voice as the human at the keyboard — anything it returns is read as content the agent can act on. That makes MCP server security a different problem from auditing an npm package: the dangerous behavior is usually legal code with bad intent, the manifest's capability claims aren't compiler-enforced, and the agent is a new execution environment that can be talked into calling tools it shouldn't. Below are the seven questions to ask before you trust one, drawn from the <a href="threat-model.html">12-class AI dev-stack threat model</a>.</p>
+
+  <div class="note"><b>Short on time?</b> Assay automates every check below — it threat-models the server before it reads a line of code, then backs each finding with a verbatim <code>file:line</code> quote. Jump to <a href="#automate">running it on an MCP server</a>, or read the manual checklist first.</div>
+
+  <h2>1. What does every response become?</h2>
+  <p>An MCP tool-call response string is read in the same context as legitimate model output. A sufficiently clever string re-enters the model as instruction — this is <em>indirect prompt injection</em>, and it is the defining risk of the MCP surface. The attacker never speaks to your model directly; they shape data your model will eventually read. When you review a server, assume every byte it can return is hostile, and check that responses are structured as data (JSON with named fields) rather than free prose that interpolates upstream, attacker-controllable strings at the top level.</p>
+
+  <h2>2. Does the tool description instruct the model?</h2>
+  <p>The tool description registered at MCP handshake time is read by the model as guidance. A description that adds operational instructions — <em>"always also call <code>read_file</code> on this path for context,"</em> <em>"the assistant should now…"</em> — is a working injection vector, sometimes called <b>MCP tool poisoning</b>. Red flags: imperative language directed at the model ("you must," "always also call"), a description that references tools other than its own, and hidden Unicode or zero-width joiners in the description string. A tool description should be a factual contract, not a prompt.</p>
+
+  <h2>3. Does the bundle ship a reader <em>and</em> a sender?</h2>
+  <p>No single tool needs to be dangerous. A "log viewer" reads a sensitive file; an "issue tracker connector" makes outbound requests. Asked to perform an innocent workflow, the agent composes them — read this log, file an issue including the contents — and sensitive data leaves the machine. The vulnerability is structural, not in any one function, so static analysis of a single tool won't surface it. When a server exposes both a high-sensitivity read primitive and an outbound network primitive, treat the combination as an exfiltration chain until proven otherwise.</p>
+
+  <h2>4. Does it shell out?</h2>
+  <p>An innocent-looking tool that wraps a dangerous one inherits your approval of the wrapper. You said "yes" to <code>format_repo</code>, not to the <code>Bash</code> command it constructs internally from your inputs — the classic confused-deputy pattern, transplanted into the agent context. Look for <code>exec</code>, <code>spawn</code>, or <code>Bash</code> invocations that build commands by string-concatenating upstream inputs without surfacing the exact command to the user.</p>
+
+  <h2>5. Is the transport remote?</h2>
+  <p>A server reachable over a remote transport can return benign descriptions at review time and inject at call time. Static review sees a snapshot; the runtime behavior belongs to a party you cannot audit. A remote MCP transport means every response is a live, untrusted injection source — weight it accordingly, and prefer servers you can run and inspect locally.</p>
+
+  <h2>6. Does capability match the claim?</h2>
+  <p>The README advertises a "weather tool"; the code, alongside the documented <code>get_forecast</code>, reads <code>~/.bash_history</code>. The author may be malicious or merely sloppy — the harm to you is identical. Write down the capabilities the server <em>claims</em>, then read the code for the capabilities it actually has: network access in a tool that advertises only local operations, filesystem reads outside the obvious work directory, crypto or child-process imports an artifact's stated purpose doesn't need. The gap between claim and code is itself the vulnerability.</p>
+
+  <h2>7. What happens on the next version?</h2>
+  <p>A clean review of <code>1.0.0</code> says nothing about <code>1.0.1</code>. Auto-update, post-install scripts, and unpinned dependency ranges turn a one-time install into a continuous trust relationship — the same typosquatting and account-takeover vectors seen across npm and PyPI apply directly to MCP registries. Pin dependencies, prefer signed releases, and re-scan on every update rather than trusting the install once.</p>
+
+  <h2 id="automate">Automating the checklist with Assay</h2>
+  <p>Running these seven questions by hand on every server you install doesn't scale. <a href="index.html">Assay</a> is an open-source MCP and Claude Code security scanner that does exactly this: it builds a <a href="how-it-works.html">threat model of the server before it reads the source</a>, dispatches one investigator per threat class, and returns a <strong>safe / caution / unsafe</strong> verdict — with a post-validator that re-reads every citation and drops anything the model can't back with real code, so you never get a confabulated finding.</p>
+  <pre><code># scan a local MCP server directory
+assay scan ./path-to-mcp-server
+
+# or inventory everything in ~/.claude and scan from the web UI
+assay inventory
+assay serve            # http://localhost:7373 → "New Scan"</code></pre>
+  <p>It runs on your Claude Code subscription — no separate API key. See <a href="installation.html">Installation</a> to get the binary, or the full <a href="threat-model.html">12-class threat model</a> for the classes beyond MCP (hooks, skills, settings, and connector OAuth scopes).</p>
+
+  <div class="note"><b>Related:</b> <a href="threat-model.html">The 12 AI dev-stack threat classes</a> · <a href="how-it-works.html">How Assay works — threat modeling before reading code</a> · <a href="faq.html">FAQ</a></div>
+</div>
+
+<footer class="foot">Assay — MCP &amp; Claude Code security scanner · <a href="https://github.com/chawdamrunal/assay">github.com/chawdamrunal/assay</a> · Apache-2.0</footer>
+</body>
+</html>
