@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Threat model — 12 AI dev-stack security classes | Assay</title>
+<title>MCP &amp; Claude Code threat modeling — the 12 security threat classes | Assay</title>
 <meta name="description" content="A defensive taxonomy of 12 threat classes for the Claude Code and MCP ecosystem: prompt injection, MCP tool poisoning, cross-tool exfiltration, confused-deputy escalation, supply-chain, hook abuse, credential exfiltration, and connector OAuth-scope overreach.">
 <link rel="canonical" href="https://chawdamrunal.github.io/assay/threat-model.html">
 <meta property="og:type" content="article">
@@ -17,6 +17,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/docs.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "MCP and Claude Code threat modeling: the 12 threat classes of the AI dev stack",
+  "description": "A defensive taxonomy of 12 threat classes for MCP and Claude Code security: prompt injection, MCP tool poisoning, cross-tool exfiltration, confused-deputy escalation, supply chain, hook abuse, credential exfiltration, and connector OAuth-scope overreach.",
+  "author": { "@type": "Person", "name": "Mrunal Chawda" },
+  "url": "https://chawdamrunal.github.io/assay/threat-model.html",
+  "keywords": "MCP security, MCP threat modeling, Claude Code security, threat modeling, prompt injection, MCP tool poisoning, supply chain security",
+  "isPartOf": { "@type": "WebSite", "name": "Assay", "url": "https://chawdamrunal.github.io/assay/" }
+}
+</script>
 <style>
   .tclass{border-top:1px solid var(--line);padding-top:20px;margin-top:26px}
   .tmeta{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
@@ -43,7 +55,7 @@
 
 <div class="wrap">
   <div class="eyebrow">Threat model · 2026</div>
-  <h1>The 12 threat classes of the AI dev stack</h1>
+  <h1>MCP and Claude Code threat modeling: the 12 threat classes</h1>
   <p class="lede">A defensive taxonomy for the Claude Code, Model Context Protocol (MCP), and agent-dev ecosystem — think OWASP Top 10 for AI tooling. Traditional SAST + dependency scanning miss these because the dangerous behavior is often legal code with bad intent, the manifest's capability claims aren't compiler-enforced, and the agent is a new execution environment that can be talked into calling tools it shouldn't. These are the classes Assay reasons about.</p>
 
   <div class="tclass">

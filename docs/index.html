@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assay — security scanner for the AI dev stack</title>
-<meta name="description" content="Assay is a security scanner for the AI dev stack. It reasons about Claude Code plugins, MCP servers, hooks, skills, and connectors with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning before you trust them.">
+<title>Assay — MCP &amp; Claude Code security scanner</title>
+<meta name="description" content="Assay is an MCP and Claude Code security scanner. It threat-models plugins, MCP servers, hooks, skills, and connectors with an LLM — not regex — before reading their code, catching prompt injection, credential exfiltration, and MCP tool poisoning before you trust them.">
 <link rel="canonical" href="https://chawdamrunal.github.io/assay/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Assay — security scanner for the AI dev stack">
+<meta property="og:title" content="Assay — MCP &amp; Claude Code security scanner">
 <meta property="og:description" content="Reasons about Claude Code plugins, MCP servers, skills & connectors with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning.">
 <meta property="og:image" content="https://chawdamrunal.github.io/assay/assets/social-card.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -17,6 +17,22 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/docs.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Assay",
+  "applicationCategory": "SecurityApplication",
+  "operatingSystem": "macOS, Linux, Windows",
+  "description": "Assay is an MCP and Claude Code security scanner. It threat-models plugins, MCP servers, hooks, skills, and connectors with an LLM before reading their code, catching prompt injection, MCP tool poisoning, and credential exfiltration.",
+  "url": "https://chawdamrunal.github.io/assay/",
+  "downloadUrl": "https://github.com/chawdamrunal/assay",
+  "license": "https://www.apache.org/licenses/LICENSE-2.0",
+  "keywords": "MCP security, Claude Code security, threat modeling, MCP security scanner, prompt injection, MCP tool poisoning",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Person", "name": "Mrunal Chawda" }
+}
+</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in">
@@ -37,7 +53,7 @@
     <img class="logo" src="assets/assay-mark.svg" alt="Assay hallmark logo">
     <div class="eyebrow">Documentation</div>
     <h1>Security scanner for the AI dev stack</h1>
-    <p class="lede">Assay reasons about an artifact with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning in Claude Code plugins, MCP servers, hooks, skills &amp; connectors. It runs on your Claude Code subscription, so there's no separate API key.</p>
+    <p class="lede">Assay is an <strong>MCP and Claude Code security scanner</strong> that reasons about an artifact with an LLM — not regex. It <strong>threat-models</strong> what a plugin, MCP server, hook, skill, or connector <em>could</em> do <em>before</em> reading a line of code, then catches prompt injection, credential exfiltration, and MCP tool poisoning. It runs on your Claude Code subscription, so there's no separate API key.</p>
     <div class="badges">
       <img src="https://img.shields.io/badge/license-Apache--2.0-4A3ED4" alt="License: Apache-2.0">
       <img src="https://img.shields.io/badge/Go-1.25%2B-00ADD8?logo=go&logoColor=white" alt="Go 1.25+">
