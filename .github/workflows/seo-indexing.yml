@@ -1,0 +1,46 @@
+name: Notify search engines
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/seo-indexing.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  indexnow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate indexing files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s docs/cd25e8377efd868b0fb1f239efa03c95.txt
+          test -s docs/sitemap.xml
+          test "$(sed -n 's:.*<loc>\(.*\)</loc>.*:\1:p' docs/sitemap.xml | wc -l | tr -d ' ')" -gt 0
+
+      - name: Submit sitemap URLs to IndexNow
+        shell: bash
+        run: |
+          set -euo pipefail
+          key="$(tr -d '\r\n' < docs/cd25e8377efd868b0fb1f239efa03c95.txt)"
+          key_location="https://chawdamrunal.github.io/assay/cd25e8377efd868b0fb1f239efa03c95.txt"
+
+          while IFS= read -r url; do
+            curl --fail --silent --show-error --head \
+              --retry 12 --retry-delay 10 --retry-all-errors \
+              "${url}" > /dev/null
+            curl --fail-with-body --silent --show-error --get \
+              'https://api.indexnow.org/indexnow' \
+              --data-urlencode "url=${url}" \
+              --data-urlencode "key=${key}" \
+              --data-urlencode "keyLocation=${key_location}"
+          done < <(sed -n 's:.*<loc>\(.*\)</loc>.*:\1:p' docs/sitemap.xml)

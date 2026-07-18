@@ -40,9 +40,9 @@
 </head>
 <body>
 <nav class="nav"><div class="nav-in">
-  <a class="brand" href="index.html"><img src="assets/assay-mark.svg" alt=""> Assay</a>
+  <a class="brand" href="./"><img src="assets/assay-mark.svg" alt=""> Assay</a>
   <div class="nav-links">
-    <a href="index.html">Docs</a>
+    <a href="./">Docs</a>
     <a href="installation.html">Install</a>
     <a href="quickstart.html">Quickstart</a>
     <a href="how-it-works.html">How it works</a>
@@ -81,7 +81,7 @@
   <p>A clean review of <code>1.0.0</code> says nothing about <code>1.0.1</code>. Auto-update, post-install scripts, and unpinned dependency ranges turn a one-time install into a continuous trust relationship — the same typosquatting and account-takeover vectors seen across npm and PyPI apply directly to MCP registries. Pin dependencies, prefer signed releases, and re-scan on every update rather than trusting the install once.</p>
 
   <h2 id="automate">Automating the checklist with Assay</h2>
-  <p>Running these seven questions by hand on every server you install doesn't scale. <a href="index.html">Assay</a> is an open-source MCP and Claude Code security scanner that does exactly this: it builds a <a href="how-it-works.html">threat model of the server before it reads the source</a>, dispatches one investigator per threat class, and returns a <strong>safe / caution / unsafe</strong> verdict — with a post-validator that re-reads every citation and drops anything the model can't back with real code, so you never get a confabulated finding.</p>
+  <p>Running these seven questions by hand on every server you install doesn't scale. <a href="./">Assay</a> is an open-source MCP and Claude Code security scanner that does exactly this: it builds a <a href="how-it-works.html">threat model of the server before it reads the source</a>, dispatches one investigator per threat class, and returns a <strong>safe / caution / unsafe</strong> verdict — with a post-validator that re-reads every citation and drops anything the model can't back with real code, so you never get a confabulated finding.</p>
   <pre><code># scan a local MCP server directory
 assay scan ./path-to-mcp-server
 

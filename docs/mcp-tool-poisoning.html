@@ -32,9 +32,9 @@
 </head>
 <body>
 <nav class="nav"><div class="nav-in">
-  <a class="brand" href="index.html"><img src="assets/assay-mark.svg" alt=""> Assay</a>
+  <a class="brand" href="./"><img src="assets/assay-mark.svg" alt=""> Assay</a>
   <div class="nav-links">
-    <a href="index.html">Docs</a>
+    <a href="./">Docs</a>
     <a href="installation.html">Install</a>
     <a href="quickstart.html">Quickstart</a>
     <a href="how-it-works.html">How it works</a>
@@ -68,7 +68,7 @@
   <p>Treat the tool description as a contract, not a prompt: keep it factual and short, and never phrase it as guidance to the model. Structure tool output as data — JSON with named fields — rather than free prose, and never interpolate upstream-controlled strings into the top level of a response. If your server proxies a third-party API, assume that API's response body is hostile and delimit it explicitly. Prefer a local transport the user can inspect over a remote one they cannot.</p>
 
   <h2>How Assay detects tool poisoning</h2>
-  <p><a href="index.html">Assay</a> is an open-source MCP and Claude Code security scanner that targets this class directly. Its threat-model stage reasons over MCP tool descriptions for imperative-toward-model language before it reads any source. A deterministic pre-pass, <code>POISON-001</code>, catches the classic directive forms — "ignore previous instructions," fake role blocks, invisible Unicode — and <code>POISON-009</code> flags an MCP manifest that declares a remote transport, i.e. a server whose every response is an untrusted injection source. Every finding is backed by a verbatim <code>file:line</code> quote, and a post-validator re-reads each citation so you never get a confabulated result.</p>
+  <p><a href="./">Assay</a> is an open-source MCP and Claude Code security scanner that targets this class directly. Its threat-model stage reasons over MCP tool descriptions for imperative-toward-model language before it reads any source. A deterministic pre-pass, <code>POISON-001</code>, catches the classic directive forms — "ignore previous instructions," fake role blocks, invisible Unicode — and <code>POISON-009</code> flags an MCP manifest that declares a remote transport, i.e. a server whose every response is an untrusted injection source. Every finding is backed by a verbatim <code>file:line</code> quote, and a post-validator re-reads each citation so you never get a confabulated result.</p>
   <pre><code># scan an MCP server for tool poisoning and the rest of the 12 classes
 assay scan ./path-to-mcp-server</code></pre>
   <p>Full detection of pure response-time injection — a server that returns benign descriptions but injects only at call time — requires dynamic execution and is on the roadmap; static review still catches the description-time and remote-transport signals above.</p>
