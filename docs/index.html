@@ -9,14 +9,14 @@
 <link rel="canonical" href="https://chawdamrunal.github.io/assay/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Assay — MCP &amp; Claude Code security scanner">
-<meta property="og:description" content="Reasons about Claude Code plugins, MCP servers, skills & connectors with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning.">
+<meta property="og:description" content="Reasons about Claude Code plugins, MCP servers, skills &amp; connectors with an LLM — not regex — to catch prompt injection, credential exfiltration, and MCP tool poisoning.">
 <meta property="og:image" content="https://chawdamrunal.github.io/assay/assets/social-card.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://chawdamrunal.github.io/assay/assets/social-card.png">
 <link rel="icon" type="image/svg+xml" href="assets/assay-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/docs.css">
 <script type="application/ld+json">
 {
@@ -34,8 +34,21 @@
   "author": { "@type": "Person", "name": "Mrunal Chawda" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Assay MCP security scanner demo",
+  "description": "Inventory a Claude Code stack, then threat-model and scan an MCP server end to end with Assay.",
+  "thumbnailUrl": "https://chawdamrunal.github.io/assay/assets/social-card.png",
+  "uploadDate": "2026-07-06",
+  "contentUrl": "https://github.com/user-attachments/assets/8e6e1c3f-358a-4cf1-a50c-6e15fbf43c75",
+  "embedUrl": "https://chawdamrunal.github.io/assay/#demo"
+}
+</script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <nav class="nav"><div class="nav-in">
   <a class="brand" href="./"><img src="assets/assay-mark.svg" alt=""> Assay</a>
   <div class="nav-links">
@@ -45,62 +58,172 @@
     <a href="how-it-works.html">How it works</a>
     <a href="threat-model.html">Threats</a>
     <a href="faq.html">FAQ</a>
-    <a href="https://github.com/chawdamrunal/assay">GitHub &#8599;</a>
+    <a class="nav-github" href="https://github.com/chawdamrunal/assay">GitHub <span aria-hidden="true">&#8599;</span></a>
   </div>
 </div></nav>
 
-<div class="wrap">
-  <div class="hero">
-    <img class="logo" src="assets/assay-mark.svg" alt="Assay hallmark logo">
-    <div class="eyebrow">Documentation</div>
-    <h1>Security scanner for the AI dev stack</h1>
-    <p class="lede">Assay is an <strong>MCP and Claude Code security scanner</strong> that reasons about an artifact with an LLM — not regex. It <strong>threat-models</strong> what a plugin, MCP server, hook, skill, or connector <em>could</em> do <em>before</em> reading a line of code, then catches prompt injection, credential exfiltration, and MCP tool poisoning. It runs on your Claude Code subscription, so there's no separate API key.</p>
-    <div class="badges">
-      <img src="https://img.shields.io/badge/license-Apache--2.0-4A3ED4" alt="License: Apache-2.0">
-      <img src="https://img.shields.io/badge/Go-1.25%2B-00ADD8?logo=go&logoColor=white" alt="Go 1.25+">
-      <img src="https://img.shields.io/badge/MCP-server-4A3ED4" alt="MCP server">
+<main class="landing" id="main-content">
+  <section class="landing-hero" aria-labelledby="hero-title">
+    <div class="hero-copy reveal-on-scroll">
+      <div class="product-pill"><span class="pulse-dot" aria-hidden="true"></span> Open source · local-first</div>
+      <h1 id="hero-title">Know what your AI tools can do <span>before you trust them.</span></h1>
+      <p class="hero-lede">Assay threat-models MCP servers, Claude Code plugins, hooks, skills, and connectors—then investigates the source and validates every citation against real code.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="installation.html">
+          Install Assay
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+        <a class="button button-secondary" href="#demo">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></svg>
+          Watch the demo
+        </a>
+      </div>
+      <div class="hero-proof" aria-label="Product highlights">
+        <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg> No separate API key</span>
+        <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg> Source stays local</span>
+        <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg> Verbatim evidence</span>
+      </div>
     </div>
-  </div>
+    <div class="product-window reveal-on-scroll" data-tilt role="img" aria-label="Assay scan report preview showing a caution verdict with verified source evidence">
+      <div class="window-bar">
+        <span></span><span></span><span></span>
+        <div class="window-title"><img src="assets/assay-mark.svg" alt=""> Assay</div>
+        <div class="window-live"><i></i> scan complete</div>
+      </div>
+      <div class="app-preview">
+        <aside class="preview-sidebar" aria-hidden="true">
+          <div class="sidebar-mark"><img src="assets/assay-mark.svg" alt=""></div>
+          <span class="sidebar-item active"></span>
+          <span class="sidebar-item"></span>
+          <span class="sidebar-item"></span>
+          <span class="sidebar-item short"></span>
+        </aside>
+        <div class="preview-main">
+          <div class="preview-header">
+            <div><small>SCAN REPORT</small><strong>weather-mcp</strong></div>
+            <span class="verdict caution"><i></i> Caution</span>
+          </div>
+          <div class="preview-stats">
+            <div><span>Threats modeled</span><strong>12</strong></div>
+            <div><span>Files investigated</span><strong>47</strong></div>
+            <div><span>Evidence verified</span><strong>100%</strong></div>
+          </div>
+          <div class="finding-card">
+            <div class="finding-top"><span class="severity">MEDIUM</span><code>T4 · EXFILTRATION</code></div>
+            <strong>Environment credentials can reach a remote endpoint</strong>
+            <p>The server reads process credentials and constructs an outbound request in the same execution path.</p>
+            <div class="evidence"><span>src/client.ts:42</span><code>headers.set("Authorization", token)</code></div>
+          </div>
+          <div class="scan-progress" aria-hidden="true"><span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <h2>What Assay does</h2>
-  <p>Before you install a plugin or wire up an MCP server, Assay threat-models what it <em>could</em> do, then reads the code for evidence — every finding backed by a verbatim <code>file:line</code> quote. It gives a <strong>safe / caution / unsafe</strong> verdict you can trust, because a post-validator re-reads each citation and drops anything the model can't back with real code. New to this surface? Start with <a href="mcp-server-security.html">how to threat-model an MCP server</a>.</p>
+  <section class="trust-strip reveal-on-scroll" aria-label="Assay capabilities">
+    <span>MCP servers</span><i></i><span>Claude Code plugins</span><i></i><span>Hooks</span><i></i><span>Skills</span><i></i><span>Connectors</span>
+  </section>
 
-  <div class="cards">
-    <a class="card" href="installation.html">
-      <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-      <h3>Installation</h3>
-      <p>Build from source today, or the prebuilt curl / Homebrew / WinGet / Docker channels.</p>
-    </a>
-    <a class="card" href="quickstart.html">
-      <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-      <h3>Quickstart</h3>
-      <p>Inventory your stack, run a scan from the web UI or CLI, and gate installs.</p>
-    </a>
-    <a class="card" href="how-it-works.html">
-      <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/></svg></div>
-      <h3>How it works</h3>
-      <p>The 5-stage methodology, the two scan modes, and the threat classes it targets.</p>
-    </a>
-    <a class="card" href="faq.html">
-      <div class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-      <h3>FAQ</h3>
-      <p>How it differs from Snyk / Cisco, whether it needs an API key, tool poisoning, and more.</p>
-    </a>
-  </div>
+  <section class="section product-demo" id="demo" aria-labelledby="demo-title">
+    <div class="section-heading reveal-on-scroll">
+      <div class="eyebrow">See the whole scan</div>
+      <h2 id="demo-title">From inventory to evidence-backed verdict.</h2>
+      <p>Watch Assay discover the installed AI dev stack, generate a threat model, investigate the source, and produce a report you can audit.</p>
+    </div>
+    <div class="video-shell reveal-on-scroll">
+      <div class="video-topbar"><span></span><span></span><span></span><p>Assay · end-to-end demo</p></div>
+      <video controls playsinline preload="metadata" poster="assets/social-card.png">
+        <source src="https://github.com/user-attachments/assets/8e6e1c3f-358a-4cf1-a50c-6e15fbf43c75" type="video/mp4">
+        Your browser does not support embedded video. <a href="https://github.com/user-attachments/assets/8e6e1c3f-358a-4cf1-a50c-6e15fbf43c75">Open the demo on GitHub</a>.
+      </video>
+    </div>
+    <div class="demo-caption reveal-on-scroll">
+      <span><b>01</b> Inventory the stack</span>
+      <span><b>02</b> Threat-model first</span>
+      <span><b>03</b> Verify every citation</span>
+    </div>
+  </section>
 
-  <h2>60-second start</h2>
-  <pre><code># build the single binary (React UI embedded)
-git clone https://github.com/chawdamrunal/assay.git &amp;&amp; cd assay
-make build &amp;&amp; make install
+  <section class="section method-section" aria-labelledby="method-title">
+    <div class="section-heading reveal-on-scroll">
+      <div class="eyebrow">Reasoning, with receipts</div>
+      <h2 id="method-title">A security review shaped like an investigation.</h2>
+      <p>Assay starts with intent and capability, not a bag of regexes. Explore the stages to see what each one contributes.</p>
+    </div>
+    <div class="method-grid reveal-on-scroll">
+      <div class="method-tabs" role="tablist" aria-label="Assay scan stages">
+        <button class="method-tab active" role="tab" aria-selected="true" aria-controls="stage-panel" data-stage="0"><span>01</span><b>Threat model</b><small>Map what could go wrong</small></button>
+        <button class="method-tab" role="tab" aria-selected="false" aria-controls="stage-panel" data-stage="1"><span>02</span><b>Investigation</b><small>Trace each hypothesis</small></button>
+        <button class="method-tab" role="tab" aria-selected="false" aria-controls="stage-panel" data-stage="2"><span>03</span><b>Validation</b><small>Re-read every citation</small></button>
+        <button class="method-tab" role="tab" aria-selected="false" aria-controls="stage-panel" data-stage="3"><span>04</span><b>Verdict</b><small>Compute the outcome</small></button>
+      </div>
+      <div class="stage-panel" id="stage-panel" role="tabpanel" aria-live="polite">
+        <div class="stage-visual" aria-hidden="true">
+          <div class="stage-orbit"><span></span><span></span><span></span><i></i></div>
+        </div>
+        <div class="stage-copy">
+          <span class="stage-label">STAGE 01 · BEFORE SOURCE REVIEW</span>
+          <h3>Build the hypotheses before reading the implementation.</h3>
+          <p>Claims, manifests, and exposed capabilities become a target-specific threat model across twelve AI-native risk classes.</p>
+          <a href="how-it-works.html">Explore the methodology <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-# see what's installed in ~/.claude, then scan from the web UI
+  <section class="section" aria-labelledby="features-title">
+    <div class="section-heading reveal-on-scroll">
+      <div class="eyebrow">Built for trust decisions</div>
+      <h2 id="features-title">The scanner your AI dev stack actually needs.</h2>
+    </div>
+    <div class="feature-grid">
+      <article class="feature-card feature-wide reveal-on-scroll">
+        <div class="feature-icon"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V7l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <div><h3>No confabulated findings.</h3><p>Every LLM-produced claim must carry a verbatim <code>file:line</code> quote. The validator physically re-reads the source and drops evidence that does not match.</p></div>
+        <div class="verification-stack" aria-hidden="true"><span>Claim extracted</span><i></i><span>Source re-read</span><i></i><span class="verified">Evidence verified</span></div>
+      </article>
+      <article class="feature-card reveal-on-scroll">
+        <div class="feature-icon"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="m8 12 2.5 2.5L16 9"/></svg></div>
+        <h3>Local by default.</h3><p>Your source stays on your machine. The default path runs through your existing Claude Code subscription.</p>
+      </article>
+      <article class="feature-card reveal-on-scroll">
+        <div class="feature-icon"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 18 10 6l4 8 2-4 4 8"/><path d="M3 21h18"/></svg></div>
+        <h3>AI-native threat coverage.</h3><p>Prompt injection, tool poisoning, grant abuse, exfiltration, confused deputies, hooks, supply chain, and more.</p>
+      </article>
+      <article class="feature-card reveal-on-scroll">
+        <div class="feature-icon"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
+        <h3>Reports made to travel.</h3><p>Human-readable Markdown, versioned JSON, SARIF export, CI gates, and clear safe / caution / unsafe verdicts.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section quickstart-panel reveal-on-scroll" aria-labelledby="quick-title">
+    <div class="quick-copy">
+      <div class="eyebrow">One binary. Sixty seconds.</div>
+      <h2 id="quick-title">Start with the stack you already have.</h2>
+      <p>Build the self-contained binary, inventory your installed tools, and open the local web UI.</p>
+      <a href="quickstart.html">Read the full quickstart <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="terminal-card">
+      <div class="terminal-bar"><span></span><span></span><span></span><button class="copy-button" type="button" data-copy aria-label="Copy install commands"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button></div>
+      <pre><code id="install-code"><span class="comment"># build Assay</span>
+git clone https://github.com/chawdamrunal/assay.git
+cd assay &amp;&amp; make build &amp;&amp; make install
+
+<span class="comment"># inspect, then launch</span>
 assay inventory
-assay serve            # http://localhost:7373 → "New Scan"</code></pre>
-  <p>Full details in <a href="installation.html">Installation</a> and <a href="quickstart.html">Quickstart</a>.</p>
+assay serve</code></pre>
+    </div>
+  </section>
 
-  <div class="note"><b>Runs on your Claude Code subscription.</b> The default scan path drives the reasoning through your existing Claude Code login via <code>claude -p</code> — no separate Anthropic API key, and no rate-limit walls. An API key is only needed for the <code>--scan-mode legacy</code> / CI fallback.</div>
-</div>
+  <section class="final-cta reveal-on-scroll">
+    <img src="assets/assay-mark.svg" alt="" aria-hidden="true">
+    <div><div class="eyebrow">Trust, but verify</div><h2>Put every AI tool through an Assay.</h2></div>
+    <div class="final-actions"><a class="button button-primary" href="installation.html">Install Assay</a><a class="text-link" href="https://github.com/chawdamrunal/assay">View on GitHub <span aria-hidden="true">↗</span></a></div>
+  </section>
+</main>
 
-<footer class="foot">Assay — security scanner for the AI dev stack · <a href="https://github.com/chawdamrunal/assay">github.com/chawdamrunal/assay</a> · Apache-2.0</footer>
+<footer class="foot"><div class="foot-in"><a class="brand" href="./"><img src="assets/assay-mark.svg" alt=""> Assay</a><p>Security scanner for the AI dev stack.</p><div><a href="installation.html">Install</a><a href="threat-model.html">Threat model</a><a href="https://github.com/chawdamrunal/assay">GitHub</a></div></div><small>Apache-2.0 · Built for defensible trust decisions.</small></footer>
+<script src="assets/docs.js" defer></script>
 </body>
 </html>
